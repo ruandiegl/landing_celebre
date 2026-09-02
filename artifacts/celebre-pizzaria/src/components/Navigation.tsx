@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'wouter';
+import logoPath from '../../attached_assets/client_images/celebre-logo.jpeg';
+import pizzaPath from '../../attached_assets/client_images/pizza-top-hover.webp';
 
 export function Navigation() {
   const [scrolled, setScrolled] = useState(false);
@@ -19,6 +20,10 @@ export function Navigation() {
     }
   };
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
@@ -29,7 +34,7 @@ export function Navigation() {
         backdropFilter: scrolled ? 'blur(10px)' : 'none',
       }}
     >
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12 grid grid-cols-[1fr_auto_1fr] items-center gap-4">
         {/* Left navigation */}
         <div className="hidden lg:flex items-center gap-8">
           <button
@@ -56,17 +61,34 @@ export function Navigation() {
         </div>
 
         {/* Center logo */}
-        <Link href="/" className="flex flex-col items-center" data-testid="nav-logo">
-          <span className="font-serif text-3xl lg:text-4xl font-bold tracking-tight text-foreground">
-            CELEBRE
+        <button
+          type="button"
+          onClick={scrollToTop}
+          className="group justify-self-center rounded-full [perspective:900px]"
+          data-testid="nav-logo"
+          aria-label="Voltar ao topo"
+        >
+          <span className="relative block h-14 w-14 rounded-full shadow-[0_0_30px_rgba(212,175,55,0.25)] transition-transform duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)] group-focus-visible:[transform:rotateY(180deg)] lg:h-16 lg:w-16">
+            <span className="absolute inset-0 overflow-hidden rounded-full [backface-visibility:hidden]">
+              <img
+                src={logoPath}
+                alt=""
+                className="h-full w-full scale-[1.18] rounded-full object-cover"
+              />
+            </span>
+            <span className="absolute inset-0 overflow-hidden rounded-full [backface-visibility:hidden] [transform:rotateY(180deg)]">
+              <img
+                src={pizzaPath}
+                alt=""
+                className="h-full w-full scale-[1.08] rounded-full object-cover"
+              />
+            </span>
           </span>
-          <span className="text-[0.65rem] tracking-[0.4em] uppercase text-primary font-sans font-semibold">
-            PIZZARIA
-          </span>
-        </Link>
+          <span className="sr-only">CELEBRE Pizzaria</span>
+        </button>
 
         {/* Right CTA */}
-        <div className="hidden lg:block">
+        <div className="hidden lg:block justify-self-end">
           <button
             onClick={() => scrollToSection('reserva')}
             className="px-6 py-2.5 rounded-full bg-primary text-primary-foreground font-sans font-semibold text-sm tracking-wide hover:scale-105 transition-transform duration-300"
@@ -79,7 +101,7 @@ export function Navigation() {
         {/* Mobile menu button */}
         <button
           onClick={() => scrollToSection('cardapio')}
-          className="lg:hidden text-primary"
+          className="lg:hidden justify-self-end text-primary"
           data-testid="nav-mobile-menu"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

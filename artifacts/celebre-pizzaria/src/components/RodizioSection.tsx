@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import pizzaVarietyPath from '../../attached_assets/generated_images/pizza-variety.jpg';
+import pizzaVarietyPath from '../../attached_assets/client_images/celebre-pizza-real.jpeg';
 
 const benefits = [
   'Mais de 30 sabores de pizza',
@@ -7,7 +7,7 @@ const benefits = [
   'Bebidas incluídas',
   'Sobremesas artesanais',
   'Sem limite de tempo',
-  'Ambiente climatizado',
+  'Ambiente temático',
 ];
 
 export function RodizioSection() {
@@ -96,6 +96,7 @@ export function RodizioSection() {
 
             <div className="pt-6">
               <button
+                onClick={() => document.getElementById('reserva')?.scrollIntoView({ behavior: 'smooth' })}
                 className="px-8 py-4 rounded-full bg-primary text-primary-foreground font-sans font-bold text-sm tracking-wide hover:scale-105 transition-transform duration-300"
                 data-testid="rodizio-cta"
               >

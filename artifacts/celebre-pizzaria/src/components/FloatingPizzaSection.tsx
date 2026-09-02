@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import floatingPizzaPath from '../../attached_assets/generated_images/floating-pizza.jpg';
+import floatingPizzaPath from '../../attached_assets/client_images/celebre-pizza-real.jpeg';
 
 export function FloatingPizzaSection() {
   const [isVisible, setIsVisible] = useState(false);

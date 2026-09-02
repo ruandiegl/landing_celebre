@@ -1,16 +1,13 @@
 import { useEffect, useState, useRef } from 'react';
+import roomPath from '../../attached_assets/client_images/celebre-sala-evento.jpeg';
+
+const WHATSAPP_PHONE = import.meta.env.VITE_WHATSAPP_PHONE ?? '5511987654321';
+const WHATSAPP_MESSAGE = 'olá, quero fazer uma reserva!';
+const whatsappUrl = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
 
 export function ReservationSection() {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
-  const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    date: '',
-    time: '',
-    people: '',
-    message: '',
-  });
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -29,20 +26,13 @@ export function ReservationSection() {
     return () => observer.disconnect();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // TODO: wire up when API exists
-    console.log('Reservation:', formData);
-  };
-
   return (
     <section
       ref={sectionRef}
       className="relative py-24 lg:py-32 bg-card/30"
       id="reserva"
     >
-      <div className="max-w-4xl mx-auto px-6 lg:px-12">
-        {/* Header */}
+      <div className="max-w-6xl mx-auto px-6 lg:px-12">
         <div
           className={`text-center mb-12 transition-all duration-1000 ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
@@ -55,125 +45,58 @@ export function ReservationSection() {
             Garanta seu lugar
           </h2>
           <p className="text-lg text-foreground/70">
-            Preencha o formulário abaixo e entraremos em contato para confirmar sua reserva.
+            Chame a equipe no WhatsApp e confirme sua mesa com uma conversa simples e direta.
           </p>
         </div>
 
-        {/* Form */}
-        <form
-          onSubmit={handleSubmit}
-          className={`space-y-6 transition-all duration-1000 delay-200 ${
+        <div
+          className={`grid lg:grid-cols-[1.05fr_0.95fr] gap-8 items-stretch transition-all duration-1000 delay-200 ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}
         >
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-sans font-semibold text-foreground mb-2 tracking-wide">
-                Nome Completo
-              </label>
-              <input
-                type="text"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-4 py-3 bg-background border border-border/50 rounded-lg text-foreground focus:border-primary focus:outline-none transition-colors"
-                placeholder="Seu nome"
-                required
-                data-testid="input-name"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-sans font-semibold text-foreground mb-2 tracking-wide">
-                Telefone / WhatsApp
-              </label>
-              <input
-                type="tel"
-                value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="w-full px-4 py-3 bg-background border border-border/50 rounded-lg text-foreground focus:border-primary focus:outline-none transition-colors"
-                placeholder="(00) 00000-0000"
-                required
-                data-testid="input-phone"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-sans font-semibold text-foreground mb-2 tracking-wide">
-                Data
-              </label>
-              <input
-                type="date"
-                value={formData.date}
-                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                className="w-full px-4 py-3 bg-background border border-border/50 rounded-lg text-foreground focus:border-primary focus:outline-none transition-colors"
-                required
-                data-testid="input-date"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-sans font-semibold text-foreground mb-2 tracking-wide">
-                Horário
-              </label>
-              <input
-                type="time"
-                value={formData.time}
-                onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                className="w-full px-4 py-3 bg-background border border-border/50 rounded-lg text-foreground focus:border-primary focus:outline-none transition-colors"
-                required
-                data-testid="input-time"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-sans font-semibold text-foreground mb-2 tracking-wide">
-              Número de Pessoas
-            </label>
-            <select
-              value={formData.people}
-              onChange={(e) => setFormData({ ...formData, people: e.target.value })}
-              className="w-full px-4 py-3 bg-background border border-border/50 rounded-lg text-foreground focus:border-primary focus:outline-none transition-colors"
-              required
-              data-testid="select-people"
-            >
-              <option value="">Selecione</option>
-              <option value="2">2 pessoas</option>
-              <option value="3-4">3-4 pessoas</option>
-              <option value="5-8">5-8 pessoas</option>
-              <option value="9-15">9-15 pessoas</option>
-              <option value="16+">Mais de 16 pessoas (grupo)</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-sans font-semibold text-foreground mb-2 tracking-wide">
-              Mensagem (opcional)
-            </label>
-            <textarea
-              value={formData.message}
-              onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-              className="w-full px-4 py-3 bg-background border border-border/50 rounded-lg text-foreground focus:border-primary focus:outline-none transition-colors resize-none"
-              rows={4}
-              placeholder="Alguma observação especial? Celebração? Evento de igreja?"
-              data-testid="textarea-message"
+          <div className="relative min-h-[360px] overflow-hidden rounded-3xl border border-primary/20">
+            <img
+              src={roomPath}
+              alt="Salão preparado para reservas e eventos no CELEBRE"
+              className="h-full w-full object-cover"
             />
+            <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent"></div>
+            <div className="absolute bottom-6 left-6 right-6">
+              <p className="text-xs tracking-[0.35em] uppercase text-primary font-semibold mb-2">
+                Mesas, grupos e eventos
+              </p>
+              <h3 className="font-serif text-3xl font-bold text-foreground">
+                Reserve para celebrar com calma
+              </h3>
+            </div>
           </div>
 
-          <button
-            type="submit"
-            className="w-full px-8 py-4 rounded-full bg-primary text-primary-foreground font-sans font-bold text-sm tracking-wide hover:scale-[1.02] transition-transform duration-300"
-            data-testid="submit-reservation"
-          >
-            Enviar Reserva
-          </button>
+          <div className="rounded-3xl border border-border/40 bg-background/70 p-8 lg:p-10 flex flex-col justify-center">
+            <p className="text-sm uppercase tracking-[0.35em] text-primary font-semibold mb-4">
+              Atendimento direto
+            </p>
+            <h3 className="font-serif text-4xl font-bold text-foreground mb-4">
+              Fale conosco pelo WhatsApp
+            </h3>
+            <p className="text-foreground/70 leading-relaxed mb-8">
+              O botão abre uma conversa com a mensagem “olá, quero fazer uma reserva!” já preenchida.
+              Depois é só informar dia, horário e quantidade de pessoas.
+            </p>
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center rounded-full bg-primary px-8 py-4 text-sm font-bold tracking-wide text-primary-foreground transition-transform duration-300 hover:scale-[1.02]"
+              data-testid="whatsapp-reservation"
+            >
+              Reservar pelo WhatsApp
+            </a>
+            <p className="mt-5 text-sm text-foreground/50">
+              Número configurável por <span className="font-mono">VITE_WHATSAPP_PHONE</span>.
+            </p>
+          </div>
+        </div>
 
-          <p className="text-center text-sm text-foreground/50">
-            Você receberá a confirmação via WhatsApp em até 2 horas
-          </p>
-        </form>
-
-        {/* Contact info */}
         <div
           className={`mt-16 grid md:grid-cols-3 gap-6 transition-all duration-1000 delay-400 ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import heroPizzaPath from '../../attached_assets/generated_images/pizza-hero.jpg';
+import heroRoomPath from '../../attached_assets/client_images/celebre-sala-cheia.jpeg';
+import logoPath from '../../attached_assets/client_images/celebre-logo.jpeg';
 
 export function HeroSection() {
   const [isVisible, setIsVisible] = useState(false);
@@ -16,18 +17,17 @@ export function HeroSection() {
   };
 
   return (
-    <section className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden">
-      {/* Background image with overlay */}
+    <section className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden pt-28 pb-20 sm:pt-32 lg:pt-24">
       <div className="absolute inset-0">
         <img
-          src={heroPizzaPath}
+          src={heroRoomPath}
           alt=""
-          className="w-full h-full object-cover opacity-20"
+          className="w-full h-full object-cover opacity-35"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/80 to-background"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-background/55 via-background/80 to-background"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-background/70 via-transparent to-background/70"></div>
       </div>
 
-      {/* Content */}
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12 text-center">
         <div
           className={`transition-all duration-1000 ${
@@ -35,8 +35,15 @@ export function HeroSection() {
           }`}
         >
           <p className="text-xs tracking-[0.5em] uppercase text-primary font-sans font-semibold mb-6">
-            Onde Fé e Sabor se Encontram
+            Onde fé e sabor se encontram
           </p>
+          <span className="mx-auto mb-8 block h-36 w-36 overflow-hidden rounded-full shadow-[0_0_70px_rgba(212,175,55,0.25)] sm:h-44 sm:w-44 lg:h-52 lg:w-52">
+            <img
+              src={logoPath}
+              alt="Logo Celebre Pizzaria Gospel Bar Abbas"
+              className="h-full w-full scale-[1.18] rounded-full object-cover"
+            />
+          </span>
           <h1 className="font-serif text-6xl sm:text-7xl lg:text-8xl font-bold mb-6 leading-[0.95] text-foreground">
             Celebre cada
             <br />
@@ -48,7 +55,7 @@ export function HeroSection() {
             Um lugar feito para famílias, grupos de igreja e celebração.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <div className="relative z-20 flex flex-col sm:flex-row gap-4 justify-center items-center">
             <button
               onClick={() => scrollToSection('cardapio')}
               className="px-8 py-4 rounded-full bg-primary text-primary-foreground font-sans font-bold text-sm tracking-wide hover:scale-105 transition-transform duration-300"
@@ -63,13 +70,6 @@ export function HeroSection() {
             >
               Reservar Mesa
             </button>
-          </div>
-        </div>
-
-        {/* Scroll indicator */}
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 border-2 border-primary/40 rounded-full flex items-start justify-center p-2">
-            <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse"></div>
           </div>
         </div>
       </div>

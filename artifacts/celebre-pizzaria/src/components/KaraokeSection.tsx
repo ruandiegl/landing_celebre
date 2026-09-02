@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import karaokeStagePath from '../../attached_assets/generated_images/karaoke-stage.jpg';
+import karaokeStagePath from '../../attached_assets/client_images/celebre-sala-cheia.jpeg';
 
 export function KaraokeSection() {
   const [isVisible, setIsVisible] = useState(false);
@@ -138,6 +138,7 @@ export function KaraokeSection() {
             </div>
 
             <button
+              onClick={() => document.getElementById('reserva')?.scrollIntoView({ behavior: 'smooth' })}
               className="w-full sm:w-auto px-8 py-4 rounded-full bg-secondary text-secondary-foreground font-sans font-bold text-sm tracking-wide hover:scale-105 transition-transform duration-300"
               data-testid="karaoke-cta"
             >

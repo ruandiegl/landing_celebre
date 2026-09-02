@@ -1,3 +1,5 @@
+import logoPath from '../../attached_assets/client_images/celebre-logo.jpeg';
+
 export function Footer() {
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -13,11 +15,12 @@ export function Footer() {
           {/* Brand */}
           <div className="md:col-span-2">
             <div className="flex flex-col items-start mb-6">
-              <span className="font-serif text-3xl font-bold tracking-tight text-foreground">
-                CELEBRE
-              </span>
-              <span className="text-[0.65rem] tracking-[0.4em] uppercase text-primary font-sans font-semibold">
-                PIZZARIA
+              <span className="block h-24 w-24 overflow-hidden rounded-full shadow-[0_0_45px_rgba(212,175,55,0.22)]">
+                <img
+                  src={logoPath}
+                  alt="CELEBRE Pizzaria Gospel Bar Abbas"
+                  className="h-full w-full scale-[1.18] rounded-full object-cover"
+                />
               </span>
             </div>
             <p className="text-foreground/60 leading-relaxed max-w-sm mb-6">
