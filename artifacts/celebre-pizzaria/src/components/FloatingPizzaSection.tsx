@@ -1,9 +1,12 @@
 import { useEffect, useState, useRef } from 'react';
-import floatingPizzaPath from '../../attached_assets/client_images/celebre-pizza-real.jpeg';
+import { useLandingContent } from '@/content/content-provider';
 
 export function FloatingPizzaSection() {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
+  const { content } = useLandingContent();
+  const section = content.sections.find((item) => item.id === 'nossa-pizza')!;
+  const image = section.images.find((item) => item.slotId === 'main')!;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -27,6 +30,9 @@ export function FloatingPizzaSection() {
       ref={sectionRef}
       className="relative py-24 lg:py-32 overflow-hidden"
       id="nossa-pizza"
+      data-section-id="nossa-pizza"
+      data-section-label={section.label}
+      aria-labelledby="nossa-pizza-title"
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -37,10 +43,10 @@ export function FloatingPizzaSection() {
             }`}
           >
             <p className="text-xs tracking-[0.5em] uppercase text-primary font-sans font-semibold">
-              Tradição Artesanal
+              {section.label}
             </p>
-            <h2 className="font-serif text-5xl lg:text-6xl font-bold leading-tight text-foreground">
-              Pizza como deve ser
+            <h2 id="nossa-pizza-title" className="font-serif text-5xl lg:text-6xl font-bold leading-tight text-foreground">
+              {section.title}
             </h2>
             <p className="text-lg text-foreground/70 leading-relaxed">
               Massa fermentada por 72 horas, molho de tomate San Marzano, mussarela de búfala e 
@@ -85,8 +91,8 @@ export function FloatingPizzaSection() {
               style={{ transformStyle: 'preserve-3d' }}
             >
               <img
-                src={floatingPizzaPath}
-                alt="Pizza artesanal CELEBRE"
+                src={image.src}
+                alt={image.alt}
                 className="relative z-10 w-full animate-float group-hover:scale-105 transition-transform duration-700"
                 style={{
                   filter: 'drop-shadow(0 25px 50px rgba(212, 175, 55, 0.3))',

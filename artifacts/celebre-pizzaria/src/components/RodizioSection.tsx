@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import pizzaVarietyPath from '../../attached_assets/client_images/celebre-pizza-real.jpeg';
+import { useLandingContent } from '@/content/content-provider';
 
 const benefits = [
   'Mais de 30 sabores de pizza',
@@ -13,6 +13,9 @@ const benefits = [
 export function RodizioSection() {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
+  const { content } = useLandingContent();
+  const section = content.sections.find((item) => item.id === 'rodizio')!;
+  const image = section.images.find((item) => item.slotId === 'main')!;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -36,6 +39,9 @@ export function RodizioSection() {
       ref={sectionRef}
       className="relative py-24 lg:py-32"
       id="rodizio"
+      data-section-id="rodizio"
+      data-section-label={section.label}
+      aria-labelledby="rodizio-title"
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -47,8 +53,8 @@ export function RodizioSection() {
           >
             <div className="relative rounded-2xl overflow-hidden">
               <img
-                src={pizzaVarietyPath}
-                alt="Rodízio de pizzas CELEBRE"
+                src={image.src}
+                alt={image.alt}
                 className="w-full h-auto"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"></div>
@@ -71,10 +77,10 @@ export function RodizioSection() {
             }`}
           >
             <p className="text-xs tracking-[0.5em] uppercase text-primary font-sans font-semibold">
-              Rodízio Completo
+              {section.label}
             </p>
-            <h2 className="font-serif text-5xl lg:text-6xl font-bold leading-tight text-foreground">
-              Pizza sem limites
+            <h2 id="rodizio-title" className="font-serif text-5xl lg:text-6xl font-bold leading-tight text-foreground">
+              {section.title}
             </h2>
             <p className="text-lg text-foreground/70 leading-relaxed">
               Nosso rodízio é perfeito para famílias e grupos de igreja. Experimente quantos 

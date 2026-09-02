@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
+import { useLandingContent } from '@/content/content-provider';
 
 const testimonials = [
   {
@@ -24,6 +25,9 @@ const testimonials = [
 export function TestimonialsSection() {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
+  const { content } = useLandingContent();
+  const section = content.sections.find((item) => item.id === 'depoimentos')!;
+  const background = section.images.find((item) => item.slotId === 'background')!;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -47,7 +51,16 @@ export function TestimonialsSection() {
       ref={sectionRef}
       className="relative py-24 lg:py-32"
       id="depoimentos"
+      data-section-id="depoimentos"
+      data-section-label={section.label}
+      aria-labelledby="depoimentos-title"
     >
+      <img
+        src={background.src}
+        alt=""
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-[0.04]"
+      />
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         {/* Header */}
         <div
@@ -56,10 +69,10 @@ export function TestimonialsSection() {
           }`}
         >
           <p className="text-xs tracking-[0.5em] uppercase text-primary font-sans font-semibold mb-4">
-            Depoimentos
+            {section.label}
           </p>
-          <h2 className="font-serif text-5xl lg:text-6xl font-bold leading-tight text-foreground">
-            O que dizem nossos clientes
+          <h2 id="depoimentos-title" className="font-serif text-5xl lg:text-6xl font-bold leading-tight text-foreground">
+            {section.title}
           </h2>
         </div>
 

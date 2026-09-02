@@ -1,50 +1,12 @@
 import { useEffect, useState, useRef } from 'react';
-import pizzaRealPath from '../../attached_assets/client_images/celebre-pizza-real.jpeg';
-import pizzaVarietyPath from '../../attached_assets/generated_images/pizza-variety.jpg';
-import pizzaHeroPath from '../../attached_assets/generated_images/pizza-hero.jpg';
-
-const pizzas = [
-  {
-    name: 'Margherita Clássica',
-    description: 'Molho de tomate San Marzano, mussarela de búfala, manjericão fresco, azeite extravirgem',
-    price: 'R$ 58',
-    image: pizzaHeroPath,
-  },
-  {
-    name: 'Frango com Catupiry',
-    description: 'Frango desfiado, catupiry cremoso, mussarela e borda dourada no forno',
-    price: 'R$ 62',
-    image: pizzaRealPath,
-  },
-  {
-    name: 'Quattro Formaggi',
-    description: 'Gorgonzola, parmesão, mussarela, provolone, mel de engenho',
-    price: 'R$ 68',
-    image: pizzaVarietyPath,
-  },
-  {
-    name: 'Portuguesa Gospel',
-    description: 'Presunto, ovos, cebola, azeitonas, mussarela, orégano',
-    price: 'R$ 64',
-    image: pizzaRealPath,
-  },
-  {
-    name: 'Vegetariana da Casa',
-    description: 'Tomate seco, rúcula, champignon, pimentão, azeitonas, queijo de cabra',
-    price: 'R$ 66',
-    image: pizzaHeroPath,
-  },
-  {
-    name: 'Calabresa Especial',
-    description: 'Calabresa artesanal, cebola roxa, mussarela, pimenta biquinho',
-    price: 'R$ 60',
-    image: pizzaVarietyPath,
-  },
-];
+import { useLandingContent } from '@/content/content-provider';
 
 export function CardapioSection() {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
+  const { content } = useLandingContent();
+  const section = content.sections.find((item) => item.id === 'cardapio')!;
+  const headerImage = section.images.find((item) => item.slotId === 'header')!;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -68,6 +30,9 @@ export function CardapioSection() {
       ref={sectionRef}
       className="relative py-24 lg:py-32 bg-card/50"
       id="cardapio"
+      data-section-id="cardapio"
+      data-section-label={section.label}
+      aria-labelledby="cardapio-title"
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div
@@ -75,11 +40,14 @@ export function CardapioSection() {
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}
         >
+          <div className="mx-auto mb-8 h-24 w-44 overflow-hidden rounded-2xl border border-primary/30 shadow-[0_0_40px_rgba(212,175,55,0.12)]">
+            <img src={headerImage.src} alt={headerImage.alt} className="h-full w-full object-cover" />
+          </div>
           <p className="text-xs tracking-[0.5em] uppercase text-primary font-sans font-semibold mb-4">
-            Nosso Cardápio
+            {section.label}
           </p>
-          <h2 className="font-serif text-5xl lg:text-6xl font-bold leading-tight text-foreground mb-6">
-            Sabores que celebram
+          <h2 id="cardapio-title" className="font-serif text-5xl lg:text-6xl font-bold leading-tight text-foreground mb-6">
+            {section.title}
           </h2>
           <p className="text-lg text-foreground/70">
             Cada pizza é preparada com dedicação e os melhores ingredientes.
@@ -88,7 +56,7 @@ export function CardapioSection() {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {pizzas.map((pizza, index) => (
+          {content.catalog.map((pizza, index) => (
             <div
               key={pizza.name}
               className={`group overflow-hidden border border-border/50 rounded-3xl bg-background/70 hover:border-primary/50 transition-all duration-500 ${
@@ -99,8 +67,8 @@ export function CardapioSection() {
             >
               <div className="aspect-[4/3] overflow-hidden">
                 <img
-                  src={pizza.image}
-                  alt={pizza.name}
+                  src={pizza.image.src}
+                  alt={pizza.image.alt}
                   className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
               </div>

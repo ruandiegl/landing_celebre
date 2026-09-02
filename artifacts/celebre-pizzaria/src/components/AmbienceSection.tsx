@@ -1,10 +1,13 @@
 import { useEffect, useState, useRef } from 'react';
-import eventRoomPath from '../../attached_assets/client_images/celebre-sala-evento.jpeg';
-import fullRoomPath from '../../attached_assets/client_images/celebre-sala-cheia.jpeg';
+import { useLandingContent } from '@/content/content-provider';
 
 export function AmbienceSection() {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
+  const { content } = useLandingContent();
+  const section = content.sections.find((item) => item.id === 'ambiente')!;
+  const eventImage = section.images.find((item) => item.slotId === 'event')!;
+  const fullRoomImage = section.images.find((item) => item.slotId === 'full-room')!;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -28,6 +31,9 @@ export function AmbienceSection() {
       ref={sectionRef}
       className="relative py-24 lg:py-32 bg-card/30"
       id="ambiente"
+      data-section-id="ambiente"
+      data-section-label={section.label}
+      aria-labelledby="ambiente-title"
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div
@@ -36,10 +42,10 @@ export function AmbienceSection() {
           }`}
         >
           <p className="text-xs tracking-[0.5em] uppercase text-primary font-sans font-semibold mb-4">
-            Nosso Espaço
+            {section.label}
           </p>
-          <h2 className="font-serif text-5xl lg:text-6xl font-bold leading-tight text-foreground mb-6">
-            Onde cada detalhe importa
+          <h2 id="ambiente-title" className="font-serif text-5xl lg:text-6xl font-bold leading-tight text-foreground mb-6">
+            {section.title}
           </h2>
         </div>
 
@@ -50,8 +56,8 @@ export function AmbienceSection() {
             }`}
           >
             <img
-              src={eventRoomPath}
-              alt="Ambiente CELEBRE preparado para evento"
+              src={eventImage.src}
+              alt={eventImage.alt}
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background/70 to-transparent"></div>
@@ -66,8 +72,8 @@ export function AmbienceSection() {
             }`}
           >
             <img
-              src={fullRoomPath}
-              alt="Salão CELEBRE com famílias e grupos reunidos"
+              src={fullRoomImage.src}
+              alt={fullRoomImage.alt}
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background/70 to-transparent"></div>

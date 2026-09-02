@@ -9,21 +9,24 @@ import { TestimonialsSection } from '@/components/TestimonialsSection';
 import { ReservationSection } from '@/components/ReservationSection';
 import { Footer } from '@/components/Footer';
 import { MobileFloatingCTA } from '@/components/MobileFloatingCTA';
+import { FloatingWhatsAppButton } from '@/components/FloatingWhatsAppButton';
+import { Reveal } from '@/components/motion/Reveal';
 
 export default function Home() {
   return (
     <div className="min-h-screen w-full bg-background grain-overlay">
       <Navigation />
-      <HeroSection />
-      <FloatingPizzaSection />
-      <CardapioSection />
-      <RodizioSection />
-      <KaraokeSection />
-      <AmbienceSection />
-      <TestimonialsSection />
-      <ReservationSection />
+      <Reveal><HeroSection /></Reveal>
+      <Reveal direction="left"><FloatingPizzaSection /></Reveal>
+      <Reveal><CardapioSection /></Reveal>
+      <Reveal direction="right"><RodizioSection /></Reveal>
+      <Reveal><KaraokeSection /></Reveal>
+      <Reveal><AmbienceSection /></Reveal>
+      <Reveal><TestimonialsSection /></Reveal>
+      <Reveal><ReservationSection /></Reveal>
       <Footer />
       <MobileFloatingCTA />
+      <FloatingWhatsAppButton />
     </div>
   );
 }

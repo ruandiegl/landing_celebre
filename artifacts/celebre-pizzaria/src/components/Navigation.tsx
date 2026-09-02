@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import logoPath from '../../attached_assets/client_images/celebre-logo.jpeg';
 import pizzaPath from '../../attached_assets/client_images/pizza-top-hover.webp';
+import { useLandingContent } from '@/content/content-provider';
 
 export function Navigation() {
   const [scrolled, setScrolled] = useState(false);
+  const { content } = useLandingContent();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -71,8 +72,8 @@ export function Navigation() {
           <span className="relative block h-14 w-14 rounded-full shadow-[0_0_30px_rgba(212,175,55,0.25)] transition-transform duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)] group-focus-visible:[transform:rotateY(180deg)] lg:h-16 lg:w-16">
             <span className="absolute inset-0 overflow-hidden rounded-full [backface-visibility:hidden]">
               <img
-                src={logoPath}
-                alt=""
+                src={content.branding.logo.src}
+                alt={content.branding.logo.alt}
                 className="h-full w-full scale-[1.18] rounded-full object-cover"
               />
             </span>

@@ -1,13 +1,21 @@
 import { useEffect, useState, useRef } from 'react';
-import roomPath from '../../attached_assets/client_images/celebre-sala-evento.jpeg';
-
-const WHATSAPP_PHONE = import.meta.env.VITE_WHATSAPP_PHONE ?? '5511987654321';
-const WHATSAPP_MESSAGE = 'olá, quero fazer uma reserva!';
-const whatsappUrl = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
+import { useLandingContent } from '@/content/content-provider';
+import {
+  ADDRESS,
+  GOOGLE_MAPS_URL,
+  formatPhoneForDisplay,
+  getWhatsAppPhone,
+  getWhatsAppUrl,
+} from '@/lib/contact-links';
 
 export function ReservationSection() {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
+  const { content } = useLandingContent();
+  const section = content.sections.find((item) => item.id === 'reserva')!;
+  const image = section.images.find((item) => item.slotId === 'main')!;
+  const whatsappPhone = getWhatsAppPhone(import.meta.env.VITE_WHATSAPP_PHONE);
+  const whatsappUrl = getWhatsAppUrl(undefined, whatsappPhone);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -31,6 +39,9 @@ export function ReservationSection() {
       ref={sectionRef}
       className="relative py-24 lg:py-32 bg-card/30"
       id="reserva"
+      data-section-id="reserva"
+      data-section-label={section.label}
+      aria-labelledby="reserva-title"
     >
       <div className="max-w-6xl mx-auto px-6 lg:px-12">
         <div
@@ -39,10 +50,10 @@ export function ReservationSection() {
           }`}
         >
           <p className="text-xs tracking-[0.5em] uppercase text-primary font-sans font-semibold mb-4">
-            Reserve sua Mesa
+            {section.label}
           </p>
-          <h2 className="font-serif text-5xl lg:text-6xl font-bold leading-tight text-foreground mb-6">
-            Garanta seu lugar
+          <h2 id="reserva-title" className="font-serif text-5xl lg:text-6xl font-bold leading-tight text-foreground mb-6">
+            {section.title}
           </h2>
           <p className="text-lg text-foreground/70">
             Chame a equipe no WhatsApp e confirme sua mesa com uma conversa simples e direta.
@@ -56,8 +67,8 @@ export function ReservationSection() {
         >
           <div className="relative min-h-[360px] overflow-hidden rounded-3xl border border-primary/20">
             <img
-              src={roomPath}
-              alt="Salão preparado para reservas e eventos no CELEBRE"
+              src={image.src}
+              alt={image.alt}
               className="h-full w-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent"></div>
@@ -92,7 +103,7 @@ export function ReservationSection() {
               Reservar pelo WhatsApp
             </a>
             <p className="mt-5 text-sm text-foreground/50">
-              Número configurável por <span className="font-mono">VITE_WHATSAPP_PHONE</span>.
+              Atendimento pelo número <span className="font-mono">{formatPhoneForDisplay(whatsappPhone)}</span>.
             </p>
           </div>
         </div>
@@ -109,7 +120,14 @@ export function ReservationSection() {
               </svg>
             </div>
             <div className="text-foreground/60 text-sm">Telefone</div>
-            <div className="text-foreground font-semibold">(11) 98765-4321</div>
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-foreground font-semibold hover:text-primary hover:underline"
+            >
+              {formatPhoneForDisplay(whatsappPhone)}
+            </a>
           </div>
 
           <div className="text-center p-6 border border-border/30 rounded-xl">
@@ -120,7 +138,14 @@ export function ReservationSection() {
               </svg>
             </div>
             <div className="text-foreground/60 text-sm">Endereço</div>
-            <div className="text-foreground font-semibold">Av. Principal, 1234 - São Paulo</div>
+            <a
+              href={GOOGLE_MAPS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-foreground font-semibold hover:text-primary hover:underline"
+            >
+              {ADDRESS}
+            </a>
           </div>
 
           <div className="text-center p-6 border border-border/30 rounded-xl">

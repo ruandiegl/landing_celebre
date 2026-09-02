@@ -1,6 +1,10 @@
+import { useLandingContent } from '@/content/content-provider';
+import { ADDRESS, GOOGLE_MAPS_URL, INSTAGRAM_URL, formatPhoneForDisplay, getWhatsAppUrl } from '@/lib/contact-links';
 import logoPath from '../../attached_assets/client_images/celebre-logo.jpeg';
 
 export function Footer() {
+  const { content } = useLandingContent();
+
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -17,8 +21,8 @@ export function Footer() {
             <div className="flex flex-col items-start mb-6">
               <span className="block h-24 w-24 overflow-hidden rounded-full shadow-[0_0_45px_rgba(212,175,55,0.22)]">
                 <img
-                  src={logoPath}
-                  alt="CELEBRE Pizzaria Gospel Bar Abbas"
+                  src={content.branding.logo.src || logoPath}
+                  alt={content.branding.logo.alt}
                   className="h-full w-full scale-[1.18] rounded-full object-cover"
                 />
               </span>
@@ -29,7 +33,9 @@ export function Footer() {
             </p>
             <div className="flex gap-4">
               <a
-                href="#"
+                href={INSTAGRAM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all"
                 aria-label="Instagram"
                 data-testid="social-instagram"
@@ -49,7 +55,9 @@ export function Footer() {
                 </svg>
               </a>
               <a
-                href="#"
+                href={getWhatsAppUrl()}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all"
                 aria-label="WhatsApp"
                 data-testid="social-whatsapp"
@@ -112,9 +120,17 @@ export function Footer() {
               Contato
             </h3>
             <ul className="space-y-3 text-foreground/60">
-              <li>Av. Principal, 1234</li>
-              <li>São Paulo - SP</li>
-              <li>(11) 98765-4321</li>
+              <li>
+                <a
+                  href={GOOGLE_MAPS_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-primary hover:underline"
+                >
+                  {ADDRESS}
+                </a>
+              </li>
+              <li>{formatPhoneForDisplay()}</li>
               <li>contato@celebrepizzaria.com.br</li>
             </ul>
           </div>

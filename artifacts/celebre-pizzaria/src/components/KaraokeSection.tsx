@@ -1,9 +1,13 @@
-import { useEffect, useState, useRef } from 'react';
-import karaokeStagePath from '../../attached_assets/client_images/celebre-sala-cheia.jpeg';
+import { Fragment, useEffect, useState, useRef } from 'react';
+import { useLandingContent } from '@/content/content-provider';
 
 export function KaraokeSection() {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
+  const { content } = useLandingContent();
+  const section = content.sections.find((item) => item.id === 'karaoke')!;
+  const image = section.images.find((item) => item.slotId === 'main')!;
+  const titleLines = section.title.split('\n');
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -27,6 +31,9 @@ export function KaraokeSection() {
       ref={sectionRef}
       className="relative py-24 lg:py-32 bg-gradient-to-b from-background via-card/30 to-background overflow-hidden"
       id="karaoke"
+      data-section-id="karaoke"
+      aria-labelledby="karaoke-title"
+      data-section-label={section.label}
     >
       {/* Decorative glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-secondary/10 rounded-full blur-[150px] pointer-events-none"></div>
@@ -39,12 +46,15 @@ export function KaraokeSection() {
           }`}
         >
           <p className="text-xs tracking-[0.5em] uppercase text-secondary font-sans font-semibold mb-4">
-            Noites de Celebração
+            {section.label}
           </p>
-          <h2 className="font-serif text-5xl lg:text-6xl font-bold leading-tight mb-6">
-            <span className="text-foreground">Karaokê</span>
-            <br />
-            <span className="text-secondary">Gospel</span>
+          <h2 id="karaoke-title" className="font-serif text-5xl lg:text-6xl font-bold leading-tight mb-6">
+            {titleLines.map((line, index) => (
+              <Fragment key={`${line}-${index}`}>
+                {index > 0 && <br />}
+                <span className={index === 0 ? 'text-foreground' : 'text-secondary'}>{line}</span>
+              </Fragment>
+            ))}
           </h2>
           <p className="text-lg text-foreground/70">
             Toda sexta e sábado à noite, o CELEBRE se transforma. Venha cantar seus louvores 
@@ -62,8 +72,8 @@ export function KaraokeSection() {
           >
             <div className="relative rounded-2xl overflow-hidden shadow-2xl">
               <img
-                src={karaokeStagePath}
-                alt="Noite de karaokê no CELEBRE"
+                src={image.src}
+                alt={image.alt}
                 className="w-full h-auto"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
