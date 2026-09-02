@@ -1,6 +1,8 @@
+/// <reference path="./cookie.d.ts" />
+
 import { randomBytes } from 'node:crypto';
 import { parse, serialize } from 'cookie';
-import { ADMIN_SESSION_MAX_AGE_SECONDS } from './admin-session';
+import { ADMIN_SESSION_MAX_AGE_SECONDS } from './admin-session.js';
 
 export const ADMIN_SESSION_COOKIE = 'celebre_admin_session';
 export const ADMIN_CSRF_COOKIE = 'celebre_admin_csrf';

@@ -1,8 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { getAdminSession } from '../../src/server/admin-auth';
-import { clearAdminCookieHeaders } from '../../src/server/admin-cookies';
-import { assertCsrf, assertSameOrigin } from '../../src/server/request-security';
-import { getAppConfig, requireMethod, runApiHandler, sendNoContent } from '../../src/server/vercel-http';
+import { getAdminSession } from '../../src/server/admin-auth.js';
+import { clearAdminCookieHeaders } from '../../src/server/admin-cookies.js';
+import { assertCsrf, assertSameOrigin } from '../../src/server/request-security.js';
+import { getAppConfig, requireMethod, runApiHandler, sendNoContent } from '../../src/server/vercel-http.js';
 
 export default async function handler(
   request: VercelRequest,

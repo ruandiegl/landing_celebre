@@ -1,4 +1,4 @@
-import type { LandingContent } from '@/content/landing-content';
+import type { LandingContent } from '../content/landing-content.js';
 
 export interface AdminSession {
   username: string;

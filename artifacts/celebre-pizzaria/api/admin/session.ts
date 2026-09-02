@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { getAdminSession } from '../../src/server/admin-auth';
-import { getAppConfig, requireMethod, runApiHandler, sendJson } from '../../src/server/vercel-http';
+import { getAdminSession } from '../../src/server/admin-auth.js';
+import { getAppConfig, requireMethod, runApiHandler, sendJson } from '../../src/server/vercel-http.js';
 
 export default async function handler(
   request: VercelRequest,

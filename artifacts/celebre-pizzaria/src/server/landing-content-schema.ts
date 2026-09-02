@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { isSafeImageSource, LANDING_SECTION_IDS } from '@/content/landing-content';
+import { isSafeImageSource, LANDING_SECTION_IDS } from '../content/landing-content.js';
 
 const imageSlotSchema = z.object({
   slotId: z.string().min(1).max(100),

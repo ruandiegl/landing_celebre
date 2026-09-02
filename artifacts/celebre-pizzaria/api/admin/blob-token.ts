@@ -1,11 +1,11 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { handleUpload } from '@vercel/blob/client';
-import { getAdminSession } from '../../src/server/admin-auth';
-import { assertCsrf, assertSameOrigin, getClientIp } from '../../src/server/request-security';
-import { createRateLimiter } from '../../src/server/rate-limit';
-import { ApiError } from '../../src/server/http-errors';
-import { getAppConfig, requireMethod, runApiHandler, sendJson } from '../../src/server/vercel-http';
-import { isAllowedMediaPath } from '../../src/server/blob-paths';
+import { getAdminSession } from '../../src/server/admin-auth.js';
+import { assertCsrf, assertSameOrigin, getClientIp } from '../../src/server/request-security.js';
+import { createRateLimiter } from '../../src/server/rate-limit.js';
+import { ApiError } from '../../src/server/http-errors.js';
+import { getAppConfig, requireMethod, runApiHandler, sendJson } from '../../src/server/vercel-http.js';
+import { isAllowedMediaPath } from '../../src/server/blob-paths.js';
 
 const ALLOWED_CONTENT_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024;

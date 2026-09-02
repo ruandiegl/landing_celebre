@@ -1,10 +1,10 @@
 import { get, put } from '@vercel/blob';
-import type { ContentDocument } from '@/lib/admin-types';
-import type { LandingContent } from '@/content/landing-content';
-import { DEFAULT_LANDING_CONTENT_DATA } from '@/content/landing-defaults-data';
-import type { AppConfig } from './config';
-import { ApiError } from './http-errors';
-import { contentDocumentSchema } from './landing-content-schema';
+import type { ContentDocument } from '../lib/admin-types.js';
+import type { LandingContent } from '../content/landing-content.js';
+import { DEFAULT_LANDING_CONTENT_DATA } from '../content/landing-defaults-data.js';
+import type { AppConfig } from './config.js';
+import { ApiError } from './http-errors.js';
+import { contentDocumentSchema } from './landing-content-schema.js';
 
 function requireBlobToken(config: AppConfig): string {
   if (!config.blobReadWriteToken) {

@@ -1,5 +1,5 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
-import type { AdminSession } from '@/lib/admin-types';
+import type { AdminSession } from '../lib/admin-types.js';
 
 export const ADMIN_SESSION_MAX_AGE_SECONDS = 30 * 60;
 const CLOCK_SKEW_MS = 5 * 60 * 1000;

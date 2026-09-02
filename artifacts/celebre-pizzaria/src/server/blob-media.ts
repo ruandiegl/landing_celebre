@@ -1,7 +1,7 @@
 import { del, list } from '@vercel/blob';
-import type { AppConfig } from './config';
-import { ApiError } from './http-errors';
-import { BLOB_MEDIA_PREFIX, isAllowedMediaPath } from './blob-paths';
+import type { AppConfig } from './config.js';
+import { ApiError } from './http-errors.js';
+import { BLOB_MEDIA_PREFIX, isAllowedMediaPath } from './blob-paths.js';
 
 export interface ListedMedia {
   id: string;

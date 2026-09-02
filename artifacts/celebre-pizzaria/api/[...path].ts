@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { applySecurityHeaders } from '../src/server/response-security';
+import { applySecurityHeaders } from '../src/server/response-security.js';
 
 export default function handler(
   _request: VercelRequest,

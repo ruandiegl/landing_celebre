@@ -1,4 +1,4 @@
-import type { ImageSlot, LandingContent } from './landing-content';
+import type { ImageSlot, LandingContent } from './landing-content.js';
 
 const image = (
   mediaKey: string,

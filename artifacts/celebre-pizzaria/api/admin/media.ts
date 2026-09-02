@@ -1,11 +1,11 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { z } from 'zod';
-import { getAdminSession } from '../../src/server/admin-auth';
-import { assertCsrf, assertSameOrigin } from '../../src/server/request-security';
-import { createRateLimiter } from '../../src/server/rate-limit';
-import { listMedia, removeMedia } from '../../src/server/blob-media';
-import { ApiError } from '../../src/server/http-errors';
-import { getAppConfig, readJsonBody, requireMethod, runApiHandler, sendJson, sendNoContent } from '../../src/server/vercel-http';
+import { getAdminSession } from '../../src/server/admin-auth.js';
+import { assertCsrf, assertSameOrigin } from '../../src/server/request-security.js';
+import { createRateLimiter } from '../../src/server/rate-limit.js';
+import { listMedia, removeMedia } from '../../src/server/blob-media.js';
+import { ApiError } from '../../src/server/http-errors.js';
+import { getAppConfig, readJsonBody, requireMethod, runApiHandler, sendJson, sendNoContent } from '../../src/server/vercel-http.js';
 
 const removeSchema = z.object({ pathname: z.string().min(1).max(512) });
 

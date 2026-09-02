@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { readContentDocument } from '../src/server/blob-content';
-import { getAppConfig, requireMethod, runApiHandler, sendJson } from '../src/server/vercel-http';
-import { ApiError } from '../src/server/http-errors';
+import { readContentDocument } from '../src/server/blob-content.js';
+import { getAppConfig, requireMethod, runApiHandler, sendJson } from '../src/server/vercel-http.js';
+import { ApiError } from '../src/server/http-errors.js';
 
 export default async function handler(
   request: VercelRequest,

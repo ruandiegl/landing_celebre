@@ -1,12 +1,12 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { z } from 'zod';
-import { getAdminSession } from '../../src/server/admin-auth';
-import { assertCsrf, assertSameOrigin } from '../../src/server/request-security';
-import { createRateLimiter } from '../../src/server/rate-limit';
-import { contentDocumentSchema, landingContentSchema } from '../../src/server/landing-content-schema';
-import { saveContentDocument } from '../../src/server/blob-content';
-import { ApiError } from '../../src/server/http-errors';
-import { getAppConfig, readJsonBody, requireMethod, runApiHandler, sendJson } from '../../src/server/vercel-http';
+import { getAdminSession } from '../../src/server/admin-auth.js';
+import { assertCsrf, assertSameOrigin } from '../../src/server/request-security.js';
+import { createRateLimiter } from '../../src/server/rate-limit.js';
+import { contentDocumentSchema, landingContentSchema } from '../../src/server/landing-content-schema.js';
+import { saveContentDocument } from '../../src/server/blob-content.js';
+import { ApiError } from '../../src/server/http-errors.js';
+import { getAppConfig, readJsonBody, requireMethod, runApiHandler, sendJson } from '../../src/server/vercel-http.js';
 
 const mutationSchema = z.object({
   content: landingContentSchema,

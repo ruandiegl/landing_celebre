@@ -1,8 +1,8 @@
 import { timingSafeEqual } from 'node:crypto';
-import type { AppConfig } from './config';
-import { ApiError } from './http-errors';
-import { getRequestHeader, type AdminRequest } from './admin-auth';
-import { ADMIN_CSRF_COOKIE, parseCookies } from './admin-cookies';
+import type { AppConfig } from './config.js';
+import { ApiError } from './http-errors.js';
+import { getRequestHeader, type AdminRequest } from './admin-auth.js';
+import { ADMIN_CSRF_COOKIE, parseCookies } from './admin-cookies.js';
 
 const CSRF_HEADER = 'x-csrf-token';
 

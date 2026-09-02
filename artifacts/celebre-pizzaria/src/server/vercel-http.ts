@@ -1,8 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import type { AdminRequest } from './admin-auth';
-import { loadConfig, type AppConfig } from './config';
-import { errorBody, ApiError } from './http-errors';
-import { applySecurityHeaders } from './response-security';
+import type { AdminRequest } from './admin-auth.js';
+import { loadConfig, type AppConfig } from './config.js';
+import { errorBody, ApiError } from './http-errors.js';
+import { applySecurityHeaders } from './response-security.js';
 
 export function toAdminRequest(request: VercelRequest): AdminRequest {
   return {

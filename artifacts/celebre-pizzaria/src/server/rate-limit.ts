@@ -1,5 +1,5 @@
-import type { AppConfig } from './config';
-import { ApiError } from './http-errors';
+import type { AppConfig } from './config.js';
+import { ApiError } from './http-errors.js';
 
 interface Bucket {
   count: number;

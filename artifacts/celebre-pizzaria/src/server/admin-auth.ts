@@ -1,13 +1,13 @@
 import { timingSafeEqual } from 'node:crypto';
-import type { AdminSession } from '@/lib/admin-types';
+import type { AdminSession } from '../lib/admin-types.js';
 import {
   ADMIN_SESSION_COOKIE,
   parseCookies,
-} from './admin-cookies';
-import type { AppConfig } from './config';
-import { ApiError } from './http-errors';
-import { createSessionToken, verifySessionToken } from './admin-session';
-import { verifyAdminPassword } from './admin-password';
+} from './admin-cookies.js';
+import type { AppConfig } from './config.js';
+import { ApiError } from './http-errors.js';
+import { createSessionToken, verifySessionToken } from './admin-session.js';
+import { verifyAdminPassword } from './admin-password.js';
 
 export interface AdminRequest {
   method?: string;

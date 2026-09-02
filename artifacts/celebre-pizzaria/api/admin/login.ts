@@ -3,15 +3,15 @@ import { z } from 'zod';
 import {
   authenticateAdmin,
   type AdminRequest,
-} from '../../src/server/admin-auth';
+} from '../../src/server/admin-auth.js';
 import {
   buildAdminCookieHeaders,
   createCsrfToken,
-} from '../../src/server/admin-cookies';
-import { getAppConfig, requireMethod, readJsonBody, runApiHandler, sendJson } from '../../src/server/vercel-http';
-import { assertSameOrigin, getClientIp } from '../../src/server/request-security';
-import { createRateLimiter } from '../../src/server/rate-limit';
-import { ApiError } from '../../src/server/http-errors';
+} from '../../src/server/admin-cookies.js';
+import { getAppConfig, requireMethod, readJsonBody, runApiHandler, sendJson } from '../../src/server/vercel-http.js';
+import { assertSameOrigin, getClientIp } from '../../src/server/request-security.js';
+import { createRateLimiter } from '../../src/server/rate-limit.js';
+import { ApiError } from '../../src/server/http-errors.js';
 
 const loginSchema = z.object({
   username: z.string().min(1).max(80),
