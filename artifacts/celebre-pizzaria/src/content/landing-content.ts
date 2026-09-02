@@ -11,8 +11,23 @@ export const LANDING_SECTION_IDS = [
 
 export type LandingSectionId = (typeof LANDING_SECTION_IDS)[number];
 
+export function isSafeImageSource(src: string): boolean {
+  if (src.startsWith('/') && !src.startsWith('//')) return true;
+  try {
+    const url = new URL(src);
+    return (
+      url.protocol === 'https:' &&
+      (url.hostname === 'blob.vercel-storage.com' ||
+        url.hostname.endsWith('.blob.vercel-storage.com'))
+    );
+  } catch {
+    return false;
+  }
+}
+
 export interface ImageSlot {
   slotId: string;
+  mediaKey: string;
   label: string;
   purpose: string;
   src: string;
@@ -131,9 +146,11 @@ export function isLandingContent(value: unknown): value is LandingContent {
     const candidate = image as Partial<ImageSlot>;
     return (
       typeof candidate.slotId === 'string' &&
+      typeof candidate.mediaKey === 'string' &&
       typeof candidate.label === 'string' &&
       typeof candidate.purpose === 'string' &&
       typeof candidate.src === 'string' &&
+      isSafeImageSource(candidate.src) &&
       typeof candidate.alt === 'string'
     );
   };

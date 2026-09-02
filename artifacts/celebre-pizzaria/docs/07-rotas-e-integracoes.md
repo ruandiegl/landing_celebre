@@ -7,7 +7,7 @@ O Wouter está configurado em `src/App.tsx`:
 | Caminho | Componente | Comportamento |
 | --- | --- | --- |
 | `/` | `Home` | renderiza a landing completa |
-| `/admin` | `Admin` | edita títulos e imagens no preview local; não possui autenticação |
+| `/admin` | `Admin` + `AdminLogin` | exige autenticação server-side; edita e publica títulos, imagens e mini catálogo |
 | qualquer outro caminho | `NotFound` | exibe o cartão 404 |
 | qualquer outro caminho | `NotFound` | exibe o cartão 404 |
 
@@ -52,9 +52,32 @@ O rodapé possui links para Instagram, Facebook e WhatsApp. O Instagram aponta p
 
 ## Conteúdo e mídia do admin
 
-`LandingContentProvider` compartilha títulos, slots e itens do mini catálogo entre `/` e `/admin`. O `ContentRepository` atual usa `localStorage` com a chave `celebre-pizzaria:landing-content:v1`; o painel identifica cada seção por `sectionId` e cada item por `catalogItemId`.
+`LandingContentProvider` compartilha títulos, slots e itens do mini catálogo entre `/` e `/admin`. A Home busca `/api/content` e usa defaults/cache local se o documento ainda não estiver publicado. O painel identifica cada seção por `sectionId`, cada imagem por `slotId`/`mediaKey` e cada item por `catalogItemId`; alterações ficam em rascunho até `Salvar alterações`.
 
-`MediaStorage` é um contrato local em `src/storage/media-storage.ts`. O adapter de preview lista assets bundled e cria URLs temporárias de arquivos selecionados. A integração seguinte deve usar `@vercel/blob` no servidor: `put` para upload público, `list` para catálogo e `del` para remoção. Tokens e operações server-side não devem entrar no bundle Vite.
+`MediaStorage` é um contrato em `src/storage/media-storage.ts`. O adapter local cria previews temporários; o adapter remoto usa `@vercel/blob/client` e `/api/admin/blob-token`. O token read-write nunca entra no bundle Vite. A API limita uploads a JPEG/PNG/WebP, 10 MiB e ao prefixo `images-celebre/`.
+
+## Endpoints serverless da landing
+
+As Functions em `artifacts/celebre-pizzaria/api` são descobertas pela Vercel e usam cookies same-origin. Rotas de mutação exigem origem permitida e `X-CSRF-Token`; respostas administrativas têm `Cache-Control: no-store` e CSP.
+
+| Método | Caminho | Acesso | Finalidade |
+| --- | --- | --- | --- |
+| `GET` | `/api/content` | público | conteúdo publicado no Blob |
+| `POST` | `/api/admin/login` | origem + rate limit | inicia sessão assinada |
+| `GET` | `/api/admin/session` | cookie de sessão | valida sessão atual |
+| `POST` | `/api/admin/logout` | sessão + CSRF | encerra sessão |
+| `PUT` | `/api/admin/content` | sessão + CSRF | publica documento com revisão/ETag |
+| `POST` | `/api/admin/content-reset` | sessão + CSRF | restaura defaults usando URLs do Blob |
+| `GET`/`DELETE` | `/api/admin/media` | sessão; DELETE + CSRF | lista/remove imagens permitidas |
+| `POST` | `/api/admin/blob-token` | sessão + CSRF + rate limit | emite token temporário restrito para upload |
+| `GET` | `/api/healthz` | público | health check da landing |
+
+O documento é salvo em `images-celebre/config/landing-content.json`. O script `scripts/migrate-assets-to-blob.ts` envia os oito assets selecionados e cria o documento somente se ele ainda não existir:
+
+```bash
+pnpm --dir artifacts/celebre-pizzaria exec tsx scripts/migrate-assets-to-blob.ts --dry-run
+pnpm --dir artifacts/celebre-pizzaria exec tsx scripts/migrate-assets-to-blob.ts
+```
 
 ## Contato e mapa
 
@@ -91,6 +114,8 @@ Não edite manualmente `lib/api-client-react/src/generated` nem `lib/api-zod/src
 
 `lib/db` inicializa um pool PostgreSQL com `DATABASE_URL` e exporta o Drizzle DB/schema. `src/schema/index.ts` ainda não define tabelas. O banco não participa da landing nem do health check atual. Qualquer funcionalidade persistida deve primeiro criar schema, validação e rota antes de ser ligada à interface.
 
-## Ausência de integração no frontend
+O `api-server` Express descrito acima é independente das Functions da landing; não misture suas variáveis ou seu Root Directory no deploy Vercel do site.
 
-Apesar de `@workspace/api-client-react` estar listado como dependência do pacote web e `QueryClientProvider` estar montado, não há import de hooks gerados, `fetch` ou `useQuery` em `celebre-pizzaria/src`. Isso é intencionalmente documentado para separar infraestrutura preparada de comportamento realmente ativo.
+## Codegen e integração no frontend
+
+O frontend usa `src/lib/admin-client.ts` para controlar cookies, CSRF e erros de publicação; os arquivos gerados continuam sendo o contrato compartilhado para outros consumidores. Edite primeiro `lib/api-spec/openapi.yaml` e regenere com `pnpm --dir lib/api-spec run codegen`.

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import pizzaPath from '../../attached_assets/client_images/pizza-top-hover.webp';
+import { PIZZA_TOP_HOVER_PATH } from '@/lib/site-media';
 import { useLandingContent } from '@/content/content-provider';
 
 export function Navigation() {
@@ -79,7 +79,7 @@ export function Navigation() {
             </span>
             <span className="absolute inset-0 overflow-hidden rounded-full [backface-visibility:hidden] [transform:rotateY(180deg)]">
               <img
-                src={pizzaPath}
+                src={PIZZA_TOP_HOVER_PATH}
                 alt=""
                 className="h-full w-full scale-[1.08] rounded-full object-cover"
               />

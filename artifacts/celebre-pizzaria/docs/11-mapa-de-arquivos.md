@@ -6,7 +6,7 @@
 | --- | --- |
 | `package.json` | scripts, dependências e nome do pacote web |
 | `vite.config.ts` | plugins, aliases, porta, base path e build |
-| `tsconfig.json` | TypeScript da aplicação e referência ao client de API |
+| `tsconfig.json` | TypeScript da aplicação, Functions e scripts |
 | `components.json` | convenção shadcn/Radix e aliases de UI |
 | `index.html` | ponto de entrada HTML, metadata e favicon |
 | `.replit-artifact/artifact.toml` | preview, portas e serviço estático de produção |
@@ -15,14 +15,25 @@
 | `src/main.tsx` | bootstrap do React |
 | `src/App.tsx` | providers, Wouter e fallback de rota |
 | `src/pages/Home.tsx` | composição e ordem da landing |
-| `src/pages/Admin.tsx` | painel local para títulos, imagens e mini catálogo |
+| `src/pages/Admin.tsx` | painel protegido para rascunho e publicação de títulos, imagens e mini catálogo |
+| `src/pages/AdminLogin.tsx` | autenticação do administrador |
 | `src/pages/not-found.tsx` | página 404 |
 | `src/content/landing-content.ts` | contratos, IDs estáveis e helpers imutáveis |
-| `src/content/landing-defaults.ts` | títulos, imagens e catálogo padrão |
+| `src/content/landing-defaults.ts` | defaults com fontes bundled para fallback |
+| `src/content/landing-defaults-data.ts` | defaults puros usados por reset/migração |
 | `src/content/content-repository.ts` | persistência local versionada e reset |
 | `src/content/content-provider.tsx` | fonte compartilhada entre landing e admin |
-| `src/storage/media-storage.ts` | contrato para futura integração Vercel Blob |
+| `src/storage/media-storage.ts` | contrato de mídia |
 | `src/storage/local-media-storage.ts` | assets bundled e previews temporários |
+| `src/storage/remote-media-storage.ts` | upload client-side com token temporário |
+| `src/content/remote-content-repository.ts` | leitura do documento publicado |
+| `src/lib/admin-client.ts` | cliente same-origin de auth/conteúdo/mídia |
+| `src/lib/admin-types.ts` | tipos compartilhados de sessão e documento |
+| `src/hooks/use-admin-session.ts` | estado de sessão do Admin |
+| `api/*.ts` | Vercel Functions públicas e administrativas |
+| `src/server/*.ts` | autenticação, cookies, CSRF, rate limit, Blob e validação |
+| `scripts/hash-admin-password.ts` | geração local de hash scrypt, sem persistir segredo |
+| `scripts/migrate-assets-to-blob.ts` | seed idempotente dos oito assets no Blob |
 | `src/lib/contact-links.ts` | telefone, WhatsApp, mapa e Instagram |
 | `src/index.css` | Tailwind, tokens, tema, fontes e animações |
 | `src/lib/utils.ts` | helper `cn` para classes |
@@ -47,7 +58,8 @@
 | `attached_assets/generated_images/*` | imagens geradas disponíveis para uso |
 | `dist/public/` | saída gerada do build; não é fonte de edição |
 | `docs/` | esta documentação |
-| `plans/plan-001-admin-animacoes-e-contatos.md` | plano executado desta mudança |
+| `plans/plan-001-admin-animacoes-e-contatos.md` | plano executado da primeira entrega |
+| `plans/plan-002-autenticacao-admin-e-vercel-blob.md` | plano da autenticação, Functions, Blob e migração |
 
 ## Artifacts auxiliares
 

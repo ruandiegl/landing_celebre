@@ -18,7 +18,7 @@
 | `PORT` | `23141` |
 | `BASE_PATH` | `/` |
 
-Em produção, todas as requisições são reescritas de `/*` para `/index.html`. Isso mantém o fallback client-side do Wouter quando alguém acessa diretamente uma URL do SPA.
+No Replit, o modo estático reescreve as rotas da SPA para `/index.html`. Na Vercel, `vercel.json` mantém o fallback da SPA, mas exclui `/api/*` para que as Functions não recebam HTML no lugar de JSON.
 
 ## Configuração global do Replit
 
@@ -67,7 +67,33 @@ Para publicar a landing na Vercel, o projeto deve apontar para o artifact `artif
 - **Output Directory:** `dist/public`
 - **Install Command:** deixe o padrão detectado pela Vercel para o workspace pnpm
 
-O arquivo `artifacts/celebre-pizzaria/vercel.json` mantém o build, a saída estática e o rewrite da SPA versionados no projeto. O rewrite garante que a landing e a rota `/admin` recebam `index.html` quando acessadas diretamente ou após um refresh.
+O arquivo `artifacts/celebre-pizzaria/vercel.json` mantém o build, a saída estática e o rewrite da SPA versionados no projeto. As Functions `api/**/*.ts` são descobertas no mesmo Root Directory.
+
+### Variáveis da Vercel
+
+Configure estes valores em Preview e Production; nunca os prefixe com `VITE_`:
+
+| Variável | Escopo | Observação |
+| --- | --- | --- |
+| `ADMIN_USERNAME` | público operacional | use `administrator` |
+| `ADMIN_PASSWORD_HASH` | segredo | gere com `scripts/hash-admin-password.ts`; não use a senha em texto |
+| `ADMIN_SESSION_SECRET` | segredo | valor aleatório longo |
+| `BLOB_READ_WRITE_TOKEN` | segredo | token do store público `images` |
+| `ADMIN_ALLOWED_ORIGINS` | config | origem pública, por exemplo `https://seu-dominio.vercel.app` |
+| `CONTENT_BLOB_PATH` | config | `images-celebre/config/landing-content.json` |
+
+O store Blob esperado é `images`, com os assets sob `images-celebre/`. O rate limit do painel usa um limiter local de melhor esforço, sem criar outro serviço de armazenamento. Em ambientes serverless, os buckets locais não são compartilhados entre instâncias; para proteção distribuída adicional, configure regras do Firewall/WAF da Vercel separadamente.
+
+### Primeiro seed do Blob
+
+Depois de configurar as variáveis e publicar uma versão que contenha as Functions, execute uma única vez:
+
+```bash
+pnpm --dir artifacts/celebre-pizzaria exec tsx scripts/migrate-assets-to-blob.ts --dry-run
+pnpm --dir artifacts/celebre-pizzaria exec tsx scripts/migrate-assets-to-blob.ts
+```
+
+O seed é idempotente e não remove blobs. Para uma troca deliberada dos oito caminhos, use `--replace-existing` após revisar o dry-run. Não execute o seed com tokens em arquivos versionados.
 
 Se a Vercel ainda estiver configurada com `artifacts/api-server` como Root Directory, altere esse campo antes de publicar novamente. O `api-server` é um serviço Express separado e não gera a página da landing.
 
@@ -82,5 +108,5 @@ Não misture as variáveis da API/DB no bundle web sem uma decisão explícita d
 - `src/index.css` importa Google Fonts em runtime; confirme que a política de CSP e a rede do ambiente permitem esse carregamento.
 - A reserva depende do domínio `wa.me` e da disponibilidade do WhatsApp.
 - As imagens são empacotadas pelo Vite a partir de `attached_assets`; verifique o tamanho do bundle e o carregamento em conexão móvel.
-- O painel `/admin` é um preview local sem autenticação; não o publique como área protegida até integrar autenticação e persistência remota.
-- A integração planejada com Vercel Blob deverá usar operações server-side e variáveis secretas fora do prefixo `VITE_`.
+- O painel `/admin` exige autenticação, cookie HttpOnly, CSRF, origem permitida e rate limit; sem as variáveis de produção ele falha fechado.
+- O upload usa token client-side temporário; operações de listagem, remoção, conteúdo e emissão de token permanecem nas Functions.

@@ -16,7 +16,7 @@ Checklist mínimo:
 ## Placeholders conhecidos
 
 - `Footer.tsx`: Facebook ainda usa `href="#"` porque o perfil não foi confirmado.
-- `Admin.tsx`: o painel é preview local, sem autenticação e sem persistência multiusuário.
+- `Admin.tsx`: o painel usa autenticação server-side e publicação remota; sem Functions/variáveis locais, somente o fallback local fica disponível e o login não deve ser contornado.
 - `ReservationSection.tsx`: o fallback de WhatsApp é `5524999687150`.
 - Dados como endereço, telefone, e-mail, preços, copyright `2024` e promessas de produto parecem iniciais e devem ser confirmados.
 - `index.html` usa `lang="en"` embora o conteúdo seja português brasileiro.
@@ -65,9 +65,19 @@ O alias `@assets` do `vite.config.ts` resolve para `attached_assets` dois nívei
 
 ## Conteúdo e Vercel Blob
 
-`src/content/landing-content.ts` é o contrato de títulos, IDs, slots e catálogo. O admin grava apenas no `localStorage` versionado nesta entrega. `src/storage/media-storage.ts` é uma fronteira de integração: não instale tokens Blob no cliente e não trate previews `blob:` como URLs duráveis.
+`src/content/landing-content.ts` é o contrato de títulos, IDs, slots, `mediaKey` e catálogo. O admin publica em `images-celebre/config/landing-content.json`; `localStorage` é somente fallback/cache. `src/storage/media-storage.ts` não deve receber tokens Blob no cliente e previews `blob:` não são URLs duráveis.
 
-O próximo planejamento deve criar endpoints server-side para upload/listagem/remoção com `@vercel/blob`, definir autenticação do admin e persistir o `LandingContent` em uma fonte compartilhada.
+Segurança obrigatória da rota administrativa:
+
+- `celebre_admin_session`: cookie HttpOnly, Secure em produção, SameSite Strict, expiração de 30 minutos;
+- `celebre_admin_csrf`: cookie não HttpOnly comparado ao header `X-CSRF-Token` nas mutações;
+- origem validada contra `ADMIN_ALLOWED_ORIGINS`;
+- rate limit local de melhor esforço por instância: login 5/15 min, conteúdo 30/min, token 20/h e mídia 60/min;
+- CSP, `nosniff`, `X-Frame-Options: DENY`, Referrer Policy, Permissions Policy e `Cache-Control: no-store`;
+- conteúdo validado com Zod; imagens limitadas a JPEG/PNG/WebP, 10 MiB e prefixo allowlisted;
+- nenhum password hash ou token Blob em `VITE_*`, HTML ou bundle.
+
+Para alterar a autenticação, atualize os testes em `src/server/` antes do código. O hash informado pelo operador deve ser gerado uma única vez pelo script e configurado como variável secreta; nunca o copie para documentação ou commit.
 
 ## Quando criar uma nova abstração
 

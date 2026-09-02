@@ -10,9 +10,9 @@ export interface MediaAsset {
 
 export interface MediaStorage {
   list: () => Promise<MediaAsset[]>;
-  upload: (file: File) => Promise<MediaAsset>;
+  upload: (file: File, metadata?: { slotId?: string }) => Promise<MediaAsset>;
   remove: (asset: MediaAsset) => Promise<void>;
 }
 
 export const MEDIA_STORAGE_INTEGRATION_NOTE =
-  'Próximo plano: conectar este contrato a @vercel/blob por endpoints server-side. Não colocar tokens em VITE_*.';
+  'A integração remota usa @vercel/blob/client com token temporário emitido pela API protegida. Não colocar BLOB_READ_WRITE_TOKEN em VITE_*.';

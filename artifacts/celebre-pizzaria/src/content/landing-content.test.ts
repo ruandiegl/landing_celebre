@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   LANDING_SECTION_IDS,
+  isSafeImageSource,
   updateCatalogItemImage,
   updateSectionImage,
   updateSectionTitle,
@@ -8,6 +9,14 @@ import {
 import { createDefaultLandingContent } from '@/content/landing-defaults';
 
 describe('landing content model', () => {
+  it('accepts bundled/blob images and rejects executable or third-party URLs', () => {
+    expect(isSafeImageSource('/images/site/pizza.webp')).toBe(true);
+    expect(isSafeImageSource('https://store.blob.vercel-storage.com/pizza.webp')).toBe(true);
+    expect(isSafeImageSource('https://example.com/pizza.webp')).toBe(false);
+    expect(isSafeImageSource('javascript:alert(1)')).toBe(false);
+    expect(isSafeImageSource('data:image/png;base64,abc')).toBe(false);
+  });
+
   it('keeps the same explicit section ids used by the landing and admin', () => {
     const content = createDefaultLandingContent();
 

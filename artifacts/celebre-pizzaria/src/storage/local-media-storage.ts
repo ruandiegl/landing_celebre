@@ -15,7 +15,7 @@ export function createLocalMediaStorage(images: ImageSlot[]): MediaStorage {
 
   return {
     list: async () => [...assets],
-    upload: async (file) => {
+    upload: async (file, _metadata) => {
       const preview: MediaAsset = {
         id: `preview-${crypto.randomUUID()}`,
         pathname: file.name,

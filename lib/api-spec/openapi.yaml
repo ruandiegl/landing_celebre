@@ -10,6 +10,10 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: content
+    description: Public landing content
+  - name: admin
+    description: Protected administration operations
 paths:
   /healthz:
     get:
@@ -24,13 +28,390 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /content:
+    get:
+      operationId: getLandingContent
+      tags: [content]
+      summary: Get the published landing content
+      responses:
+        "200":
+          description: Published content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContentDocument"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /admin/login:
+    post:
+      operationId: adminLogin
+      tags: [admin]
+      summary: Authenticate the administrator
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminLoginRequest"
+      responses:
+        "200":
+          description: Authenticated session
+          headers:
+            Set-Cookie:
+              $ref: "#/components/headers/SetCookie"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminSessionResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+  /admin/session:
+    get:
+      operationId: getAdminSession
+      tags: [admin]
+      summary: Get the current administrator session
+      security:
+        - adminSession: []
+      responses:
+        "200":
+          description: Current session
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminSessionResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /admin/logout:
+    post:
+      operationId: adminLogout
+      tags: [admin]
+      summary: End the administrator session
+      security:
+        - adminSession: []
+      parameters:
+        - $ref: "#/components/parameters/CsrfToken"
+      responses:
+        "204":
+          description: Session ended
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /admin/content:
+    put:
+      operationId: updateLandingContent
+      tags: [admin]
+      summary: Publish landing content with optimistic concurrency
+      security:
+        - adminSession: []
+      parameters:
+        - $ref: "#/components/parameters/CsrfToken"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContentMutationRequest"
+      responses:
+        "200":
+          description: Updated content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContentDocument"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+  /admin/content-reset:
+    post:
+      operationId: resetLandingContent
+      tags: [admin]
+      summary: Reset landing content to the published defaults
+      security:
+        - adminSession: []
+      parameters:
+        - $ref: "#/components/parameters/CsrfToken"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RevisionRequest"
+      responses:
+        "200":
+          description: Reset content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContentDocument"
+        "409":
+          $ref: "#/components/responses/Conflict"
+  /admin/media:
+    get:
+      operationId: listAdminMedia
+      tags: [admin]
+      summary: List images in the CELEBRE Blob prefix
+      security:
+        - adminSession: []
+      responses:
+        "200":
+          description: Media assets
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MediaListResponse"
+    delete:
+      operationId: removeAdminMedia
+      tags: [admin]
+      summary: Remove an image from the CELEBRE Blob prefix
+      security:
+        - adminSession: []
+      parameters:
+        - $ref: "#/components/parameters/CsrfToken"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MediaRemoveRequest"
+      responses:
+        "204":
+          description: Asset removed
+        "422":
+          $ref: "#/components/responses/ValidationError"
+  /admin/blob-token:
+    post:
+      operationId: createAdminBlobToken
+      tags: [admin]
+      summary: Create a constrained Vercel Blob client upload token
+      security:
+        - adminSession: []
+      parameters:
+        - $ref: "#/components/parameters/CsrfToken"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BlobTokenRequest"
+      responses:
+        "200":
+          description: Blob SDK response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BlobTokenResponse"
+        "415":
+          $ref: "#/components/responses/UnsupportedMediaType"
+        "429":
+          $ref: "#/components/responses/RateLimited"
 components:
+  securitySchemes:
+    adminSession:
+      type: apiKey
+      in: cookie
+      name: celebre_admin_session
+  parameters:
+    CsrfToken:
+      name: X-CSRF-Token
+      in: header
+      required: true
+      schema:
+        type: string
+  headers:
+    SetCookie:
+      schema:
+        type: string
+  responses:
+    Unauthorized:
+      description: Authentication required or invalid credentials
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    Forbidden:
+      description: Request security check failed
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    Conflict:
+      description: Optimistic concurrency conflict
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    ValidationError:
+      description: Request validation failed
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    RateLimited:
+      description: Too many requests
+      headers:
+        Retry-After:
+          schema:
+            type: integer
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    UnsupportedMediaType:
+      description: Image type or size is not allowed
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
   schemas:
     HealthStatus:
       type: object
       properties:
         status:
           type: string
-      required:
-        - status
-
+      required: [status]
+    ImageSlot:
+      type: object
+      properties:
+        slotId: { type: string }
+        mediaKey: { type: string }
+        label: { type: string }
+        purpose: { type: string }
+        src: { type: string, format: uri-reference }
+        alt: { type: string }
+      required: [slotId, mediaKey, label, purpose, src, alt]
+    LandingSection:
+      type: object
+      properties:
+        id:
+          type: string
+          enum: [hero, nossa-pizza, cardapio, rodizio, karaoke, ambiente, depoimentos, reserva]
+        label: { type: string }
+        title: { type: string }
+        images:
+          type: array
+          minItems: 1
+          items: { $ref: "#/components/schemas/ImageSlot" }
+      required: [id, label, title, images]
+    CatalogItem:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        description: { type: string }
+        price: { type: string }
+        image: { $ref: "#/components/schemas/ImageSlot" }
+      required: [id, name, description, price, image]
+    LandingContent:
+      type: object
+      properties:
+        schemaVersion: { type: integer, const: 1 }
+        branding:
+          type: object
+          properties:
+            logo: { $ref: "#/components/schemas/ImageSlot" }
+          required: [logo]
+        sections:
+          type: array
+          minItems: 8
+          maxItems: 8
+          items: { $ref: "#/components/schemas/LandingSection" }
+        catalog:
+          type: array
+          minItems: 1
+          maxItems: 30
+          items: { $ref: "#/components/schemas/CatalogItem" }
+      required: [schemaVersion, branding, sections, catalog]
+    ContentDocument:
+      type: object
+      properties:
+        content: { $ref: "#/components/schemas/LandingContent" }
+        revision: { type: string }
+        updatedAt: { type: string, format: date-time }
+      required: [content, revision, updatedAt]
+    AdminLoginRequest:
+      type: object
+      properties:
+        username: { type: string, minLength: 1, maxLength: 80 }
+        password: { type: string, minLength: 1, maxLength: 256, writeOnly: true }
+      required: [username, password]
+    AdminSession:
+      type: object
+      properties:
+        username: { type: string }
+        issuedAt: { type: number }
+        expiresAt: { type: number }
+      required: [username, issuedAt, expiresAt]
+    AdminSessionResponse:
+      type: object
+      properties:
+        session: { $ref: "#/components/schemas/AdminSession" }
+      required: [session]
+    ContentMutationRequest:
+      type: object
+      properties:
+        content: { $ref: "#/components/schemas/LandingContent" }
+        revision: { type: string }
+      required: [content]
+    RevisionRequest:
+      type: object
+      properties:
+        revision: { type: string }
+    MediaAsset:
+      type: object
+      properties:
+        id: { type: string }
+        pathname: { type: string }
+        url: { type: string }
+        kind: { type: string, enum: [remote] }
+      required: [id, pathname, url, kind]
+    MediaListResponse:
+      type: object
+      properties:
+        assets:
+          type: array
+          items: { $ref: "#/components/schemas/MediaAsset" }
+      required: [assets]
+    MediaRemoveRequest:
+      type: object
+      properties:
+        pathname: { type: string, minLength: 1, maxLength: 512 }
+      required: [pathname]
+    BlobTokenRequest:
+      type: object
+      properties:
+        type: { type: string }
+        payload:
+          type: object
+          properties:
+            pathname: { type: string }
+            multipart: { type: boolean }
+            clientPayload: { type: string }
+          required: [pathname]
+      required: [type, payload]
+    BlobTokenResponse:
+      type: object
+      properties:
+        type: { type: string }
+        clientToken: { type: string }
+        response: { type: string }
+      required: [type]
+    Error:
+      type: object
+      properties:
+        code: { type: string }
+        message: { type: string }
+        retryAfter: { type: integer }
+      required: [code, message]
+    ErrorResponse:
+      type: object
+      properties:
+        error: { $ref: "#/components/schemas/Error" }
+      required: [error]

@@ -4,6 +4,7 @@ import {
   useContext,
   useMemo,
   useState,
+  useEffect,
   type PropsWithChildren,
 } from 'react';
 import {
@@ -17,6 +18,7 @@ import {
 } from './landing-content';
 import { createDefaultLandingContent } from './landing-defaults';
 import { getBrowserContentRepository } from './content-repository';
+import { fetchPublishedContent } from './remote-content-repository';
 
 interface LandingContentContextValue {
   content: LandingContent;
@@ -29,6 +31,7 @@ interface LandingContentContextValue {
     values: Partial<Pick<LandingContent['catalog'][number], 'name' | 'description' | 'price'>>,
   ) => void;
   resetContent: () => void;
+  replaceContent: (content: LandingContent) => void;
 }
 
 const LandingContentContext = createContext<LandingContentContextValue | null>(null);
@@ -38,7 +41,30 @@ export function LandingContentProvider({ children }: PropsWithChildren) {
   const repository = useMemo(() => getBrowserContentRepository(defaults), [defaults]);
   const [content, setContent] = useState<LandingContent>(() => repository.load());
 
+  useEffect(() => {
+    let active = true;
+    void fetchPublishedContent()
+      .then((document) => {
+        if (!active || !document) return;
+        setContent(document.content);
+        repository.save(document.content);
+      })
+      .catch(() => {
+        // Bundled/local content remains the offline-safe fallback.
+      });
+    return () => {
+      active = false;
+    };
+  }, [repository]);
+
   const commit = useCallback(
+    (nextContent: LandingContent) => {
+      setContent(nextContent);
+      repository.save(nextContent);
+    },
+    [repository],
+  );
+  const replaceContent = useCallback(
     (nextContent: LandingContent) => {
       setContent(nextContent);
       repository.save(nextContent);
@@ -62,8 +88,9 @@ export function LandingContentProvider({ children }: PropsWithChildren) {
         const reset = repository.reset();
         setContent(reset);
       },
+      replaceContent,
     }),
-    [commit, content, repository],
+    [commit, content, replaceContent],
   );
 
   return (

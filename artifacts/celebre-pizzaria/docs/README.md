@@ -12,9 +12,9 @@ Documentação de referência da aplicação web `@workspace/celebre-pizzaria`, 
 | Stack principal | React 19, TypeScript 5.9, Vite 7 |
 | UI e estilo | Tailwind CSS 4, shadcn/Radix UI, CSS customizado |
 | Navegação | Wouter, com `/` público, `/admin` e âncoras internas |
-| Dados | `src/content/` com defaults versionados e adapter local de preview |
+| Dados | Blob público para conteúdo publicado + fallback local versionado |
 | Reserva | Link externo para WhatsApp |
-| Backend da landing | Nenhum consumido atualmente; Vercel Blob fica preparado por contrato |
+| Backend da landing | Vercel Functions em `api/` para auth, conteúdo e Blob |
 | Animações | Framer Motion para reveals e GSAP para timeline da hero |
 | Pacote | `@workspace/celebre-pizzaria` |
 | Diretório | `artifacts/celebre-pizzaria` |
@@ -33,6 +33,7 @@ Documentação de referência da aplicação web `@workspace/celebre-pizzaria`, 
 10. [Manutenção e gotchas](10-manutencao-e-gotchas.md) — pontos de atenção e riscos conhecidos.
 11. [Mapa de arquivos](11-mapa-de-arquivos.md) — referência rápida dos diretórios e responsabilidades.
 12. [Plano 001](../plans/plan-001-admin-animacoes-e-contatos.md) — implementação de admin, animações, contatos e próxima integração de mídia.
+13. [Plano 002](../plans/plan-002-autenticacao-admin-e-vercel-blob.md) — autenticação segura do admin, políticas de proteção e migração de imagens para Vercel Blob.
 
 ## Execução rápida
 
@@ -53,14 +54,16 @@ pnpm --filter @workspace/celebre-pizzaria run build
 
 O endereço e a porta efetivos dependem de `PORT` e `BASE_PATH`; veja [Instalação e execução](03-instalacao-e-execucao.md).
 
+Para desenvolvimento da autenticação/API, copie `.env.example` para `.env.local` e rode o projeto com um ambiente que execute as Functions, como `vercel dev`. O Vite puro continua servindo a landing e o fallback local, mas não cria os endpoints `/api/admin/*`.
+
 ## Limites importantes
 
 - A aplicação é montada no cliente e não possui formulário de reserva persistido.
-- `/admin` é um painel de preview local: não é autenticação nem controle de acesso de produção.
-- Alterações do admin são salvas no `localStorage` versionado e não substituem persistência remota.
+- `/admin` exige sessão assinada em cookie, CSRF e origem permitida; o primeiro acesso mostra a tela de autenticação.
+- O conteúdo publicado é salvo no Blob em `images-celebre/config/landing-content.json`; `localStorage` continua apenas como fallback offline/cache.
 - Os botões de navegação fazem scroll suave para IDs da mesma página; não são rotas independentes.
 - A reserva abre o WhatsApp com uma mensagem pré-preenchida.
-- O monorepo possui `api-server`, `api-spec`, `api-zod`, `api-client-react` e `db`, mas a landing não importa nem chama esses módulos no estado atual.
+- O `api-server` Express continua separado; as Functions específicas da landing ficam em `artifacts/celebre-pizzaria/api`.
 - Instagram e WhatsApp estão configurados; Facebook continua sem perfil confirmado e permanece placeholder.
 
 ## Fonte da verdade
@@ -72,14 +75,16 @@ O endereço e a porta efetivos dependem de `PORT` e `BASE_PATH`; veja [Instalaç
 | Conteúdo, títulos e slots | `src/content/landing-defaults.ts` e `src/content/landing-content.ts` |
 | Persistência local de conteúdo | `src/content/content-repository.ts` e `content-provider.tsx` |
 | Textos fixos complementares | componentes em `src/components/` |
-| Painel administrativo | `src/pages/Admin.tsx` |
+| Painel administrativo | `src/pages/Admin.tsx`, `src/pages/AdminLogin.tsx` e `src/hooks/use-admin-session.ts` |
+| API da landing | `api/`, `src/server/` e `lib/api-spec/openapi.yaml` |
+| Conteúdo publicado | `src/server/blob-content.ts`, `src/content/landing-defaults-data.ts` e Blob |
+| Mídia | `src/storage/remote-media-storage.ts`, `src/server/blob-media.ts` e `scripts/migrate-assets-to-blob.ts` |
 | Contatos e URLs externas | `src/lib/contact-links.ts` |
-| Contrato de mídia futura | `src/storage/media-storage.ts` |
 | Tokens e efeitos visuais | `src/index.css` |
 | Dependências e scripts da landing | `package.json` |
 | Porta, base path e produção | `vite.config.ts` e `.replit-artifact/artifact.toml` |
 | Contrato da API scaffold | `lib/api-spec/openapi.yaml` |
-| Planejamento de implementação | `plans/plan-001-admin-animacoes-e-contatos.md` |
+| Planejamento de implementação | `plans/plan-001-admin-animacoes-e-contatos.md` e `plans/plan-002-autenticacao-admin-e-vercel-blob.md` |
 
 ## Convenção desta documentação
 

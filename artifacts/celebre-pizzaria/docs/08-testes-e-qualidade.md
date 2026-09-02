@@ -2,7 +2,7 @@
 
 ## Cobertura existente
 
-O pacote `@workspace/celebre-pizzaria` possui Vitest com ambiente jsdom e testes de contrato/interação em `src/**/*.test.ts(x)`. A cobertura atual valida modelo de conteúdo, fallback e reset do repositório local, links de contato, comportamento reduzido do reveal e edição de título no admin.
+O pacote `@workspace/celebre-pizzaria` possui Vitest com ambiente jsdom e testes de contrato/interação em `src/**/*.test.ts(x)`. A cobertura valida modelo de conteúdo, URLs seguras, hash/sessão/cookies, origem/CSRF, rate limit local, fallback remoto/local, links de contato, comportamento reduzido do reveal e edição de título no admin.
 
 Além dos testes automatizados, a validação disponível inclui:
 
@@ -45,7 +45,9 @@ O primeiro comando do pacote chama `tsc -p tsconfig.json --noEmit`. O build do p
 - [ ] O link “Reservar pelo WhatsApp” abre a URL esperada e a mensagem está preenchida.
 - [ ] O botão flutuante de WhatsApp aparece sem cobrir CTAs e abre `5524999687150`.
 - [ ] `/admin` lista as oito seções com `sectionId`, slots nomeados e seis itens com `catalogItemId`.
-- [ ] Alterar título/imagem no admin reflete na landing e `Restaurar defaults` desfaz a edição.
+- [ ] `/admin` sem sessão mostra autenticação e não exibe o editor.
+- [ ] Alterar título/imagem cria rascunho; `Salvar alterações` publica e `Restaurar defaults` desfaz a edição remota.
+- [ ] Duas sessões com revisões diferentes recebem conflito `409` sem sobrescrever o trabalho mais novo.
 
 ### Responsividade e acessibilidade
 
@@ -64,6 +66,15 @@ O primeiro comando do pacote chama `tsc -p tsconfig.json --noEmit`. O build do p
 - [ ] Fontes e imagens carregam no build publicado.
 - [ ] Favicon e metadata são conferidos no HTML servido.
 - [ ] Um caminho inexistente mostra o 404 sem quebrar a aplicação.
+
+### Segurança e Blob
+
+- [ ] Produção tem todas as variáveis server-side configuradas e nenhuma usa `VITE_`.
+- [ ] Login repetido recebe `429` no limite e não revela se usuário ou senha estava errado.
+- [ ] Mutação sem origem permitida ou sem CSRF recebe `403`.
+- [ ] Token Blob aceita apenas JPEG/PNG/WebP, máximo 10 MiB e prefixo `images-celebre/`.
+- [ ] `/api/unknown` retorna JSON `404`, não `index.html`.
+- [ ] A migração passa primeiro por `--dry-run` e não remove blobs.
 
 ## Seletores úteis para testes E2E
 

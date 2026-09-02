@@ -2,13 +2,13 @@
 
 ## Onde editar o conteúdo
 
-O conteúdo editável da landing tem contrato centralizado em `src/content/` e é consumido pela Home e pelo painel `/admin`. O provider atual usa defaults e `localStorage` versionado como preview local; ele não substitui um CMS ou persistência multiusuário.
+O conteúdo editável da landing tem contrato centralizado em `src/content/` e é consumido pela Home e pelo painel `/admin`. O documento publicado fica no Vercel Blob; o provider usa defaults e `localStorage` versionado como fallback/cache offline.
 
 | Conteúdo | Fonte |
 | --- | --- |
-| Títulos e slots das seções | `src/content/landing-defaults.ts` |
+| Títulos e slots das seções | `src/content/landing-defaults-data.ts` (puro) e `landing-defaults.ts` (bundled) |
 | Contrato e IDs estáveis | `src/content/landing-content.ts` |
-| Edição e preview local | `src/pages/Admin.tsx` e `src/content/content-provider.tsx` |
+| Edição, autenticação e publicação | `src/pages/Admin.tsx`, `AdminLogin.tsx`, `src/hooks/use-admin-session.ts` |
 | Hero, subtítulo e CTAs | `src/components/HeroSection.tsx` + conteúdo central |
 | Processo artesanal e métricas | `src/components/FloatingPizzaSection.tsx` + conteúdo central |
 | Pizzas, descrições, preços e imagens | `content.catalog` em `src/content/landing-defaults.ts` |
@@ -44,7 +44,24 @@ O conteúdo editável da landing tem contrato centralizado em `src/content/` e �
 | `attached_assets/generated_images/ingredients.jpg` | disponível, não importado pela landing atual |
 | `attached_assets/generated_images/karaoke-stage.jpg` | disponível, não importado pela landing atual |
 
-Os assets atuais são importados no TypeScript, o que permite ao Vite incluí-los no bundle de produção com nomes processados. O admin pode selecionar esses assets ou usar uma URL/preview local. O contrato `src/storage/media-storage.ts` está pronto para a futura integração com Vercel Blob; nessa integração, atualize também o `alt` do slot.
+Os assets atuais são importados no TypeScript, o que permite ao Vite incluí-los no fallback bundled de produção. A migração para o Blob usa o prefixo `images-celebre/` e os `mediaKey` estáveis dos slots. O admin pode selecionar assets remotos ou enviar JPEG/PNG/WebP de até 10 MiB; a URL final é gravada no documento somente ao publicar.
+
+### Inventário de migração para o Blob
+
+O script `scripts/migrate-assets-to-blob.ts` trabalha com estes oito arquivos e caminhos exatos:
+
+| `mediaKey` | Origem | Caminho no Blob |
+| --- | --- | --- |
+| `brand-logo-escura` | `public/images/logo-escura.png` | `images-celebre/brand/logo-escura.png` |
+| `brand-logo-chromakey` | `public/images/logo-chromakey.png` | `images-celebre/brand/logo-chromakey.png` |
+| `room-full` | `attached_assets/client_images/celebre-sala-cheia.jpeg` | `images-celebre/site/celebre-sala-cheia.jpeg` |
+| `pizza-real` | `attached_assets/client_images/celebre-pizza-real.jpeg` | `images-celebre/site/celebre-pizza-real.jpeg` |
+| `room-event` | `attached_assets/client_images/celebre-sala-evento.jpeg` | `images-celebre/site/celebre-sala-evento.jpeg` |
+| `pizza-top-hover` | `attached_assets/client_images/pizza-top-hover.webp` | `images-celebre/site/pizza-top-hover.webp` |
+| `pizza-hero` | `attached_assets/generated_images/pizza-hero.jpg` | `images-celebre/site/pizza-hero.jpg` |
+| `pizza-variety` | `attached_assets/generated_images/pizza-variety.jpg` | `images-celebre/site/pizza-variety.jpg` |
+
+O documento editorial é `images-celebre/config/landing-content.json`. A migração não apaga blobs, ignora caminhos existentes por padrão e só substitui caminhos exatos quando `--replace-existing` é informado.
 
 As logos de marca ficam em `public/images` porque são referências estáveis da identidade visual. A versão chromakey foi materializada como PNG com transparência para evitar que o fundo verde apareça no hero.
 
