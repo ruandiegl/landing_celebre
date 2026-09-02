@@ -5,6 +5,7 @@ import {
 } from './landing-content';
 
 export const CONTENT_STORAGE_KEY = 'celebre-pizzaria:landing-content:v1';
+const LEGACY_BUNDLED_LOGO_PATH = '/attached_assets/client_images/celebre-logo.jpeg';
 
 export interface ContentRepository {
   load: () => LandingContent;
@@ -17,6 +18,22 @@ export function createLocalContentRepository(
   defaults: LandingContent,
 ): ContentRepository {
   const fallback = () => cloneLandingContent(defaults);
+  const migrate = (content: LandingContent) => {
+    if (!content.branding.logo.src.includes(LEGACY_BUNDLED_LOGO_PATH)) {
+      return content;
+    }
+
+    return {
+      ...content,
+      branding: {
+        ...content.branding,
+        logo: {
+          ...content.branding.logo,
+          src: defaults.branding.logo.src,
+        },
+      },
+    };
+  };
 
   return {
     load: () => {
@@ -26,7 +43,9 @@ export function createLocalContentRepository(
         const raw = storage.getItem(CONTENT_STORAGE_KEY);
         if (!raw) return fallback();
         const parsed: unknown = JSON.parse(raw);
-        return isLandingContent(parsed) ? cloneLandingContent(parsed) : fallback();
+        return isLandingContent(parsed)
+          ? migrate(cloneLandingContent(parsed))
+          : fallback();
       } catch {
         return fallback();
       }

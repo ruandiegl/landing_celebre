@@ -61,7 +61,7 @@ O rodapé possui links para Instagram, Facebook e WhatsApp. O Instagram aponta p
 - WhatsApp: `+55 (24) 99968-7150`, URL em `https://wa.me/5524999687150`.
 - Instagram: `@celebrepizzaria`, URL `https://instagram.com/celebrepizzaria`.
 - Endereço: `R. Beira Rio n 2233, Morada do Vale, 27275-330`.
-- Mapa: `GOOGLE_MAPS_URL` usa `https://www.google.com/maps/search/?api=1` com a query do endereço codificada.
+- Mapa: `GOOGLE_MAPS_URL` usa o link oficial compartilhado `https://maps.app.goo.gl/3btrZZdN3EAZXz968`, que leva ao caminho correto do estabelecimento.
 
 ## API scaffold do workspace
 

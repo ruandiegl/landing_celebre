@@ -25,7 +25,7 @@ Não trate placeholders como configuração válida de produção.
 
 ## Favicon
 
-`index.html` aponta para `/src/attached_assets/client_images/celebre-logo.jpeg`, enquanto o asset está fisicamente em `attached_assets/client_images` e é importado por componentes via caminho relativo. Verifique o favicon no build servido. Se ele falhar, prefira alinhar a referência a um arquivo em `public` ou a um import processado pelo Vite, mantendo essa mudança fora de uma simples troca de texto em metadata.
+`index.html` aponta para `/images/logo-escura.png`, um asset estável em `public/images`. Verifique o favicon no build servido, especialmente quando o deploy usar um `BASE_PATH` diferente da raiz.
 
 ## Alias de assets
 

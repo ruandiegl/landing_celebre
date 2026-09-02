@@ -1,6 +1,6 @@
 import { useLandingContent } from '@/content/content-provider';
 import { ADDRESS, GOOGLE_MAPS_URL, INSTAGRAM_URL, formatPhoneForDisplay, getWhatsAppUrl } from '@/lib/contact-links';
-import logoPath from '../../attached_assets/client_images/celebre-logo.jpeg';
+import { HEADER_LOGO_PATH } from '@/lib/brand-assets';
 
 export function Footer() {
   const { content } = useLandingContent();
@@ -21,7 +21,7 @@ export function Footer() {
             <div className="flex flex-col items-start mb-6">
               <span className="block h-24 w-24 overflow-hidden rounded-full shadow-[0_0_45px_rgba(212,175,55,0.22)]">
                 <img
-                  src={content.branding.logo.src || logoPath}
+                  src={content.branding.logo.src || HEADER_LOGO_PATH}
                   alt={content.branding.logo.alt}
                   className="h-full w-full scale-[1.18] rounded-full object-cover"
                 />

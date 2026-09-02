@@ -11,6 +11,7 @@ describe('landing content model', () => {
   it('keeps the same explicit section ids used by the landing and admin', () => {
     const content = createDefaultLandingContent();
 
+    expect(content.branding.logo.src).toContain('/images/logo-escura.png');
     expect(content.sections.map((section) => section.id)).toEqual(
       LANDING_SECTION_IDS,
     );

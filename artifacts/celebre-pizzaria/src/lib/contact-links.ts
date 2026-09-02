@@ -2,7 +2,7 @@ export const DEFAULT_WHATSAPP_PHONE = '5524999687150';
 export const WHATSAPP_MESSAGE = 'olá, quero fazer uma reserva!';
 export const INSTAGRAM_URL = 'https://instagram.com/celebrepizzaria';
 export const ADDRESS = 'R. Beira Rio n 2233, Morada do Vale, 27275-330';
-export const GOOGLE_MAPS_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ADDRESS)}`;
+export const GOOGLE_MAPS_URL = 'https://maps.app.goo.gl/3btrZZdN3EAZXz968';
 
 export function normalizePhone(phone: string): string {
   return phone.replace(/\D/g, '');

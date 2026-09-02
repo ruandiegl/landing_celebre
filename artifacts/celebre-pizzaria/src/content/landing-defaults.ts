@@ -1,9 +1,9 @@
 import heroRoomPath from '../../attached_assets/client_images/celebre-sala-cheia.jpeg';
-import logoPath from '../../attached_assets/client_images/celebre-logo.jpeg';
 import eventRoomPath from '../../attached_assets/client_images/celebre-sala-evento.jpeg';
 import pizzaRealPath from '../../attached_assets/client_images/celebre-pizza-real.jpeg';
 import pizzaVarietyPath from '../../attached_assets/generated_images/pizza-variety.jpg';
 import pizzaHeroPath from '../../attached_assets/generated_images/pizza-hero.jpg';
+import { HEADER_LOGO_PATH } from '@/lib/brand-assets';
 import type { ImageSlot, LandingContent } from './landing-content';
 import { cloneLandingContent } from './landing-content';
 
@@ -22,7 +22,7 @@ const defaultLandingContent: LandingContent = {
       'logo',
       'Logo principal',
       'Marca exibida no topo e no rodapé',
-      logoPath,
+      HEADER_LOGO_PATH,
       'Logo CELEBRE Pizzaria Gospel Bar Abbas',
     ),
   },

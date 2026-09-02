@@ -23,8 +23,6 @@ describe('contact links', () => {
 
   it('exposes the confirmed Instagram and address links', () => {
     expect(INSTAGRAM_URL).toBe('https://instagram.com/celebrepizzaria');
-    expect(GOOGLE_MAPS_URL).toContain('google.com/maps/search/?api=1&query=');
-    expect(decodeURIComponent(GOOGLE_MAPS_URL)).toContain('R. Beira Rio n 2233');
-    expect(decodeURIComponent(GOOGLE_MAPS_URL)).toContain('Morada do Vale');
+    expect(GOOGLE_MAPS_URL).toBe('https://maps.app.goo.gl/3btrZZdN3EAZXz968');
   });
 });

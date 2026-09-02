@@ -26,7 +26,8 @@ O conteúdo editável da landing tem contrato centralizado em `src/content/` e �
 
 | Arquivo | Uso atual |
 | --- | --- |
-| `attached_assets/client_images/celebre-logo.jpeg` | logo no hero, navegação e rodapé |
+| `public/images/logo-escura.png` | logo circular no header, favicon e rodapé |
+| `public/images/logo-chromakey.png` | logo principal transparente do hero |
 | `attached_assets/client_images/celebre-pizza-real.jpeg` | pizza flutuante, rodízio e cards do cardápio |
 | `attached_assets/client_images/celebre-sala-cheia.jpeg` | fundo do hero, karaokê e ambiente com grupos |
 | `attached_assets/client_images/celebre-sala-evento.jpeg` | ambiente de evento e imagem da reserva |
@@ -44,6 +45,8 @@ O conteúdo editável da landing tem contrato centralizado em `src/content/` e �
 | `attached_assets/generated_images/karaoke-stage.jpg` | disponível, não importado pela landing atual |
 
 Os assets atuais são importados no TypeScript, o que permite ao Vite incluí-los no bundle de produção com nomes processados. O admin pode selecionar esses assets ou usar uma URL/preview local. O contrato `src/storage/media-storage.ts` está pronto para a futura integração com Vercel Blob; nessa integração, atualize também o `alt` do slot.
+
+As logos de marca ficam em `public/images` porque são referências estáveis da identidade visual. A versão chromakey foi materializada como PNG com transparência para evitar que o fundo verde apareça no hero.
 
 ## Regras de conteúdo
 

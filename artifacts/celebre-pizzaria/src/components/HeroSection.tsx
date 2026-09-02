@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useState } from 'react';
 import { useLandingContent } from '@/content/content-provider';
 import { HeroIntro } from '@/components/motion/HeroIntro';
+import { HERO_LOGO_PATH } from '@/lib/brand-assets';
 
 export function HeroSection() {
   const [isVisible, setIsVisible] = useState(false);
@@ -48,11 +49,11 @@ export function HeroSection() {
           <p data-hero-animate className="text-xs tracking-[0.5em] uppercase text-primary font-sans font-semibold mb-6">
             Onde fé e sabor se encontram
           </p>
-          <span data-hero-animate className="mx-auto mb-8 block h-36 w-36 overflow-hidden rounded-full shadow-[0_0_70px_rgba(212,175,55,0.25)] sm:h-44 sm:w-44 lg:h-52 lg:w-52">
+          <span data-hero-animate className="mx-auto mb-8 block w-64 max-w-full drop-shadow-[0_0_45px_rgba(212,175,55,0.22)] sm:w-72 lg:w-80">
             <img
-              src={content.branding.logo.src}
+              src={HERO_LOGO_PATH}
               alt={content.branding.logo.alt}
-              className="h-full w-full scale-[1.18] rounded-full object-cover"
+              className="h-auto w-full object-contain"
             />
           </span>
           <h1 id="hero-title" data-hero-animate className="font-serif text-6xl sm:text-7xl lg:text-8xl font-bold mb-6 leading-[0.95] text-foreground">

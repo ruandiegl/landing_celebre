@@ -57,6 +57,20 @@ O resultado da landing é um diretório estático. O servidor escolhido precisa:
 
 Se o host não suportar rewrite, links diretos ou refresh em rotas client-side podem retornar 404. As rotas de produto são `/` e `/admin`; o fallback continua sendo parte da configuração.
 
+### Configuração na Vercel
+
+Para publicar a landing na Vercel, o projeto deve apontar para o artifact `artifacts/celebre-pizzaria`, e não para `artifacts/api-server`. No painel do projeto Vercel, use:
+
+- **Root Directory:** `artifacts/celebre-pizzaria`
+- **Framework Preset:** `Vite`
+- **Build Command:** `pnpm run build`
+- **Output Directory:** `dist/public`
+- **Install Command:** deixe o padrão detectado pela Vercel para o workspace pnpm
+
+O arquivo `artifacts/celebre-pizzaria/vercel.json` mantém o build, a saída estática e o rewrite da SPA versionados no projeto. O rewrite garante que a landing e a rota `/admin` recebam `index.html` quando acessadas diretamente ou após um refresh.
+
+Se a Vercel ainda estiver configurada com `artifacts/api-server` como Root Directory, altere esse campo antes de publicar novamente. O `api-server` é um serviço Express separado e não gera a página da landing.
+
 ## API e DB no Replit
 
 O API server possui artifact próprio e porta padrão configurada como `8080` em produção; ele exige `PORT` e possui health startup em `/api/healthz`. O banco exige `DATABASE_URL`. Nenhum desses serviços é necessário para publicar a landing no estado atual.

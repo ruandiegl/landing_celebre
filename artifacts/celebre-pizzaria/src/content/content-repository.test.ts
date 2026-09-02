@@ -45,4 +45,24 @@ describe('local content repository', () => {
     expect(repository.reset()).toEqual(defaults);
     expect(repository.load()).toEqual(defaults);
   });
+
+  it('migrates the previous bundled logo to the current header logo', () => {
+    const storage = createMemoryStorage();
+    const defaults = createDefaultLandingContent();
+    const repository = createLocalContentRepository(storage, defaults);
+    const legacy = {
+      ...defaults,
+      branding: {
+        ...defaults.branding,
+        logo: {
+          ...defaults.branding.logo,
+          src: '/attached_assets/client_images/celebre-logo.jpeg',
+        },
+      },
+    };
+
+    storage.setItem(CONTENT_STORAGE_KEY, JSON.stringify(legacy));
+
+    expect(repository.load().branding.logo.src).toBe(defaults.branding.logo.src);
+  });
 });
