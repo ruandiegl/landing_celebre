@@ -59,4 +59,12 @@ describe('Vercel Function ESM imports', () => {
 
     expect(source).toContain('/// <reference path="./cookie.d.ts" />');
   });
+
+  it('allows Vercel to emit Function entrypoints', () => {
+    const tsconfig = JSON.parse(
+      readFileSync(resolve(serverRoot, '../../tsconfig.json'), 'utf8'),
+    ) as { compilerOptions?: { noEmit?: boolean } };
+
+    expect(tsconfig.compilerOptions?.noEmit).not.toBe(true);
+  });
 });
