@@ -67,4 +67,20 @@ describe('Vercel Function ESM imports', () => {
 
     expect(tsconfig.compilerOptions?.noEmit).not.toBe(true);
   });
+
+  it('does not enable ts-extension imports when Vercel must emit JavaScript', () => {
+    const tsconfig = JSON.parse(
+      readFileSync(resolve(serverRoot, '../../tsconfig.json'), 'utf8'),
+    ) as { compilerOptions?: { allowImportingTsExtensions?: boolean } };
+
+    expect(tsconfig.compilerOptions?.allowImportingTsExtensions).not.toBe(true);
+  });
+
+  it('does not require the Vite client type library in emitted Functions', () => {
+    const tsconfig = JSON.parse(
+      readFileSync(resolve(serverRoot, '../../tsconfig.json'), 'utf8'),
+    ) as { compilerOptions?: { types?: string[] } };
+
+    expect(tsconfig.compilerOptions?.types ?? []).not.toContain('vite/client');
+  });
 });
