@@ -12,6 +12,8 @@ describe('blob path allowlist', () => {
     expect(isAllowedBlobPath('other-store/photo.webp')).toBe(false);
     expect(isAllowedBlobPath(`${BLOB_MEDIA_PREFIX}../secret`)).toBe(false);
     expect(isAllowedBlobPath(`${BLOB_MEDIA_PREFIX}site\\photo.webp`)).toBe(false);
+    expect(isAllowedMediaPath(BLOB_MEDIA_PREFIX)).toBe(false);
+    expect(isAllowedMediaPath(`${BLOB_MEDIA_PREFIX}site/`)).toBe(false);
     expect(isAllowedMediaPath(`${BLOB_MEDIA_PREFIX}config/landing-content.json`)).toBe(false);
   });
 

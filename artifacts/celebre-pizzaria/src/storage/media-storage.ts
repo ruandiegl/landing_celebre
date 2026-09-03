@@ -15,4 +15,4 @@ export interface MediaStorage {
 }
 
 export const MEDIA_STORAGE_INTEGRATION_NOTE =
-  'A integração remota usa @vercel/blob/client com token temporário emitido pela API protegida. Não colocar BLOB_READ_WRITE_TOKEN em VITE_*.';
+  'A integração remota usa @vercel/blob/client com token temporário emitido pela API protegida. O segredo read-write permanece somente nas Functions.';

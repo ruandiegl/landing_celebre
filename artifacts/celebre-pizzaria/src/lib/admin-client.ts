@@ -6,6 +6,11 @@ interface ErrorPayload {
   error?: { code?: string; message?: string; retryAfter?: number };
 }
 
+export interface AdminBlobUploadToken {
+  clientToken: string;
+  pathname: string;
+}
+
 export class AdminApiError extends Error {
   constructor(
     public readonly status: number,
@@ -110,6 +115,16 @@ export async function resetLandingContent(revision?: string): Promise<ContentDoc
 export async function listAdminMedia(): Promise<MediaAsset[]> {
   const response = await request<{ assets: MediaAsset[] }>('/api/admin/media');
   return response.assets;
+}
+
+export async function createAdminBlobUploadToken(
+  slotId: string,
+  filename: string,
+): Promise<AdminBlobUploadToken> {
+  return request<AdminBlobUploadToken>('/api/admin/blob-token', {
+    method: 'POST',
+    body: JSON.stringify({ slotId, filename }),
+  });
 }
 
 export async function removeAdminMedia(pathname: string): Promise<void> {

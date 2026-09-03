@@ -1,5 +1,5 @@
-import { upload } from '@vercel/blob/client';
-import { getAdminCsrfToken, listAdminMedia, removeAdminMedia } from '@/lib/admin-client';
+import { put } from '@vercel/blob/client';
+import { createAdminBlobUploadToken, listAdminMedia, removeAdminMedia } from '@/lib/admin-client';
 import type { MediaStorage } from './media-storage';
 
 export interface RemoteMediaStorageOptions {
@@ -13,14 +13,11 @@ export function createRemoteMediaStorage(options: RemoteMediaStorageOptions = {}
     },
     async upload(file, metadata) {
       const slotId = metadata?.slotId ?? 'general';
-      const pathname = `images-celebre/${slotId}/${crypto.randomUUID()}-${file.name}`;
-      const result = await upload(pathname, file, {
+      const { clientToken, pathname } = await createAdminBlobUploadToken(slotId, file.name);
+      const result = await put(pathname, file, {
         access: 'public',
-        handleUploadUrl: '/api/admin/blob-token',
-        clientPayload: JSON.stringify({ slotId }),
-        headers: {
-          'X-CSRF-Token': getAdminCsrfToken() ?? '',
-        },
+        token: clientToken,
+        contentType: file.type,
         onUploadProgress: ({ percentage }) => options.onProgress?.(percentage),
       });
       return {

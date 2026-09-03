@@ -151,8 +151,14 @@ export default function Admin() {
       })
       .catch(() => {
         if (!active) return;
-        setMediaStorage(localMediaStorage);
-        void localMediaStorage.list().then(setAssets);
+        if (import.meta.env.DEV) {
+          setMediaStorage(localMediaStorage);
+          void localMediaStorage.list().then(setAssets);
+          return;
+        }
+        setMediaStorage(remoteMediaStorage);
+        setAssets([]);
+        setNotice('Vercel Blob indisponível. Nenhum upload será salvo localmente.');
       });
     return () => {
       active = false;
@@ -199,14 +205,14 @@ export default function Admin() {
     image: ImageSlot,
     onSelect: (src: string) => void,
   ) => {
-    const storage = mediaStorage ?? localMediaStorage;
+    const storage = mediaStorage ?? remoteMediaStorage;
     try {
       const asset = await storage.upload(file, { slotId: image.mediaKey });
       setAssets(await storage.list());
       onSelect(asset.url);
-      showNotice(storage === localMediaStorage ? 'Preview local criado. Configure o Blob para publicar a imagem.' : 'Imagem enviada. Salve as alterações para publicar o conteúdo.');
-    } catch {
-      showNotice('Não foi possível enviar a imagem.');
+      showNotice('Imagem enviada ao Vercel Blob. Salve as alterações para publicar o conteúdo.');
+    } catch (cause) {
+      showNotice(cause instanceof AdminApiError ? cause.message : 'Não foi possível enviar a imagem ao Vercel Blob.');
     }
   };
 

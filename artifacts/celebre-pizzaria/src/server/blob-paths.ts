@@ -11,7 +11,17 @@ export function isAllowedBlobPath(pathname: string): boolean {
 }
 
 export function isAllowedMediaPath(pathname: string): boolean {
-  return isAllowedBlobPath(pathname) && !pathname.startsWith(`${BLOB_MEDIA_PREFIX}config/`);
+  return (
+    isAllowedBlobPath(pathname) &&
+    pathname !== BLOB_MEDIA_PREFIX &&
+    !pathname.endsWith('/') &&
+    !pathname.startsWith(`${BLOB_MEDIA_PREFIX}config/`) &&
+    /\.(?:jpe?g|png|webp)$/i.test(pathname)
+  );
+}
+
+export function hasAllowedMediaExtension(filename: string): boolean {
+  return /\.(?:jpe?g|png|webp)$/i.test(filename);
 }
 
 function safeSegment(value: string, fallback: string): string {
